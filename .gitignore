@@ -1,3 +1,11 @@
 # Archivos compilados de Python
 __pycache__/
 *.py[cod]
+# Archivos de log
+*.log
+# Configuraciones de editor de código
+.vscode/
+# Archivos de Node.js
+node_modules/
+# Entornos virtuales
+venv/
