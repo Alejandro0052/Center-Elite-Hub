@@ -9,3 +9,5 @@ __pycache__/
 node_modules/
 # Entornos virtuales
 venv/
+#variables de entorno
+python-dotenv/
