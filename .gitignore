@@ -9,5 +9,10 @@ __pycache__/
 node_modules/
 # Entornos virtuales
 venv/
+env/
 #variables de entorno
 python-dotenv/
+
+# Ignorar la carpeta media que contiene archivos subidos por los usuarios
+media/
+
