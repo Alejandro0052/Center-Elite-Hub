@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marca
 
+
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'apellido', 'correo', 'edad', 'direccion')
 
