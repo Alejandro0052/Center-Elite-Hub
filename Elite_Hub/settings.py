@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +48,12 @@ INSTALLED_APPS = [
     'Elite_Hub'
  
 ]
+
+JAZZMIN_SETTINGS = {
+
+
+    
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
