@@ -19,8 +19,8 @@ class Nutricionista(models.Model):
     
 
    
-#    def __str__(self):
- #       return f'{self.especialidad}'
+    def __str__(self):
+        return f'{self.usuario}'
 
 
 class Deportista(models.Model):
@@ -28,24 +28,24 @@ class Deportista(models.Model):
     deporte = models.CharField(max_length=50)
     #edad = models.ImageField()
 
-   # def __str__(self):
-    #    return f'{self.usuario.nombre} - {self.deporte}'
+    def __str__(self):
+        return f'{self.usuario.nombre} - {self.deporte}'
     
 class Patrocinador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100)
 
 
-    #def __str__(self):
-     #   return f'{self.nombre} - {self.apellido}' 
+    def __str__(self):
+        return f'{self.usuario} - {self.deportistas_interes}' 
     
     
 class Marca(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
 
-   # def __str__(self):
-    #    return f'{self.razon_social}'
+    def __str__(self):
+        return f'{self.usuario}' - {self.razon_social}
 
 
 #class Invitados(models.Model):
@@ -65,19 +65,22 @@ class Pqrs(models.Model):
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
 
-    #def __str__(self):
-     #   return f'{self.asunto}'
+    def __str__(self):
+       return f'{self.usuario}' - {self.asunto} 
 
 
 class Comentarios(models.Model):
-    deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, models.CASCADE)
+    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+    #nutricionista = models.ForeignKey(Nutricionista, on_delete=models.CASCADE)
+    #deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
     patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
     marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     texto = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-   # def __str__(self):
-    #    return f'{self.texto}'
+    def __str__(self):
+        return f'{self.usuario}' - {self.texto}
 
 #Agregue related_name='deporte_detail'
 class Deporte(models.Model):
@@ -85,21 +88,22 @@ class Deporte(models.Model):
     #nombre = models.CharField(max_length=50)
     #descripcion = models.TextField()
 
-  #  def __str__(self):
-   #     return f'{self.deportista}'
+    def __str__(self):
+       return f'{self.deportista}'
 
 
 class Contenido(models.Model):
-    deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
-    patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
-    marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, models.CASCADE)
+    #deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
+   # patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
+    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
     fecha_publicacion = models.DateTimeField(auto_now_add=True)
     
 
-#    def __str__(self):
- #       return f'{self.titulo}'
+    def __str__(self):
+       return f'{self.titulo}'
     
 
 ##Another superclass, it is not yet related to more classes, (they are only related to those below)
