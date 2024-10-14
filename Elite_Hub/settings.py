@@ -49,11 +49,7 @@ INSTALLED_APPS = [
  
 ]
 
-JAZZMIN_SETTINGS = {
 
-
-    
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
