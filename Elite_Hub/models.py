@@ -10,7 +10,7 @@ class Usuario(models.Model):
     edad = models.IntegerField()
 
     def __str__(self):
-        return f'{self.nombre} {self.apellido}'
+        return f'{self.nombre} - {self.apellido}'
 
 
 
@@ -29,7 +29,7 @@ class Deportista(models.Model):
     #edad = models.ImageField()
 
     def __str__(self):
-        return f'{self.usuario.nombre} - {self.deporte}'
+        return f'{self.usuario.nombre}'
     
 class Patrocinador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
@@ -37,7 +37,7 @@ class Patrocinador(models.Model):
 
 
     def __str__(self):
-        return f'{self.usuario} - {self.deportistas_interes}' 
+        return f'{self.usuario}' 
     
     
 class Marca(models.Model):
@@ -45,7 +45,7 @@ class Marca(models.Model):
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
 
     def __str__(self):
-        return f'{self.usuario}' - {self.razon_social}
+        return f'{self.usuario}'
 
 
 #class Invitados(models.Model):
@@ -66,7 +66,7 @@ class Pqrs(models.Model):
     descripcion = models.CharField(max_length=250)
 
     def __str__(self):
-       return f'{self.usuario}' - {self.asunto} 
+       return f'{self.usuario} - {self.asunto}' 
 
 
 class Comentarios(models.Model):
