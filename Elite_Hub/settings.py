@@ -50,6 +50,18 @@ INSTALLED_APPS = [
  
 ]
 
+INSTALLED_APPS = [
+    'jazzmin',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'Elite_Hub'
+ 
+]
+
 JAZZMIN_SETTINGS = {
     "site_title": "Elite Hub",
     "site_header": "Administración",
@@ -99,6 +111,7 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success"
     }
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
