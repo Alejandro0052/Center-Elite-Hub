@@ -3,10 +3,12 @@ from .models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marc
 
 
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'apellido', 'correo', 'edad', 'direccion')
+    list_display = ['nombre', 'apellido', 'numero_telefono', 'correo']
+    list_display_links = ['nombre']  # Permitir click en el nombre para ver el detalle
+ #   readonly_fields = ['nombre', 'apellido', 'numero_telefono', 'correo',]
 
-
-
+def has_change_permission(self, request, obj=None):
+        return False  # Cambiar a False para  evitar la edición desde aquí
 
 
 
