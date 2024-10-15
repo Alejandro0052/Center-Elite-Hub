@@ -8,6 +8,7 @@ class Usuario(models.Model):
     fecha_registro = models.DateField(auto_now_add=True)
     direccion = models.CharField(max_length=100)
     edad = models.IntegerField()
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.nombre} - {self.apellido}'
@@ -74,8 +75,8 @@ class Comentarios(models.Model):
     #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     #nutricionista = models.ForeignKey(Nutricionista, on_delete=models.CASCADE)
     #deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
-    patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
-    marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+    #patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
+    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
     texto = models.TextField()
     fecha_creacion = models.DateTimeField(auto_now_add=True)
 
