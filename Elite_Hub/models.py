@@ -27,8 +27,8 @@ class Nutricionista(models.Model):
 class Deportista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=50)
-    #edad = models.ImageField()
-
+    
+    
     def __str__(self):
         return f'{self.usuario.nombre}'
     
