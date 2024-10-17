@@ -5,7 +5,7 @@ class Usuario(models.Model):
     apellido = models.CharField(max_length=50)
     numero_telefono = models.CharField(max_length=15)
     correo = models.EmailField(max_length=80, unique=True)
-    fecha_registro = models.DateField(auto_now_add=True)
+    fecha_registro = models.DateField(null=True, blank=True)
     direccion = models.CharField(max_length=100)
     edad = models.IntegerField()
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
