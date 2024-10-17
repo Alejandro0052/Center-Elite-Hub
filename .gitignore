@@ -16,3 +16,6 @@ python-dotenv/
 # Ignorar la carpeta media que contiene archivos subidos por los usuarios
 media/
 
+
+# Ignorar la carpeta media que contiene archivos subidos por los usuarios
+media/
