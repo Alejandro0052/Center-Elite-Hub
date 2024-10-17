@@ -125,6 +125,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Elite_Hub.urls'
 
+#AUTH_USER_MODEL = 'Elite_Hub.Usuario'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
