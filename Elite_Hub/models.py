@@ -17,9 +17,7 @@ class Usuario(models.Model):
 
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    
 
-   
     def __str__(self):
         return f'{self.usuario}'
 
@@ -49,16 +47,6 @@ class Marca(models.Model):
         return f'{self.usuario}'
 
 
-#class Invitados(models.Model):
-  # usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
- #   usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-  #  descripcion = models.CharField(max_length=50)
-   # nombre = models.CharField(max_length=50)
-    #apellido = models.CharField(max_length=50)
-    #numero_telefono = models.IntegerField()
-
-    #def __str__(self):
-     #   return f'{self.nombre} - {self.descripcion}'
 
 
 class Pqrs(models.Model):
@@ -70,37 +58,22 @@ class Pqrs(models.Model):
        return f'{self.usuario} - {self.asunto}' 
 
 
-class Comentarios(models.Model):
-    usuario = models.ForeignKey(Usuario, models.CASCADE)
-    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
-    #nutricionista = models.ForeignKey(Nutricionista, on_delete=models.CASCADE)
-    #deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
-    #patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
-    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
-    texto = models.TextField()
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f'{self.usuario}' - {self.texto}
+
 
 #Agregue related_name='deporte_detail'
 class Deporte(models.Model):
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
-    #nombre = models.CharField(max_length=50)
-    #descripcion = models.TextField()
+    descripcion = models.TextField()
 
     def __str__(self):
        return f'{self.deportista}'
 
-
 class Contenido(models.Model):
-    usuario = models.ForeignKey(Usuario, models.CASCADE)
-    #deportista = models.ForeignKey(Deportista, on_delete=models.CASCADE)
-   # patrocinador = models.ForeignKey(Patrocinador, on_delete=models.CASCADE)
-    #marca = models.ForeignKey(Marca, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
-    fecha_publicacion = models.DateTimeField(auto_now_add=True)
+
     
 
     def __str__(self):
