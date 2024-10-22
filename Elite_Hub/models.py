@@ -1,6 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Usuario(models.Model):
+    perfil = models.OneToOneField(User, on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
     apellido = models.CharField(max_length=50)
     numero_telefono = models.CharField(max_length=15)
@@ -14,24 +16,35 @@ class Usuario(models.Model):
         return f'{self.nombre} - {self.apellido}'
 
 
+class Perfil(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    biografia = models.TextField()
+
+    def __str__(self):
+        return self.usuario.username
+
+
+
+
 
 class Nutricionista(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return f'{self.usuario}'
 
 
 class Deportista(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=50)
+    descripcion = models.CharField(max_length=50)
     
     
     def __str__(self):
-        return f'{self.usuario.nombre}'
+        return f'{self.usuario}'
     
 class Patrocinador(models.Model):
-    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100)
 
 
@@ -40,7 +53,7 @@ class Patrocinador(models.Model):
     
     
 class Marca(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
 
     def __str__(self):
@@ -50,7 +63,7 @@ class Marca(models.Model):
 
 
 class Pqrs(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
 
@@ -70,7 +83,7 @@ class Deporte(models.Model):
        return f'{self.deportista}'
 
 class Contenido(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
 
