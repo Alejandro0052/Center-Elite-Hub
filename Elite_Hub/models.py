@@ -1,78 +1,63 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
-class Usuario(models.Model):
-    perfil = models.OneToOneField(User, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
+# class Usuario(models.Model):
+#     nombre = models.CharField(max_length=50)
+#     apellido = models.CharField(max_length=50)
+#     numero_telefono = models.CharField(max_length=15)
+#     correo = models.EmailField(max_length=80, unique=True)
+#     fecha_registro = models.DateField(auto_now_add=True)
+#     direccion = models.CharField(max_length=100)
+#     edad = models.IntegerField()
+#     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+
+#     def __str__(self):
+#         return f'{self.nombre} - {self.apellido}'
+
+class Usuario(AbstractUser):
     numero_telefono = models.CharField(max_length=15)
-    correo = models.EmailField(max_length=80, unique=True)
-    fecha_registro = models.DateField(auto_now_add=True)
-    direccion = models.CharField(max_length=100)
-    edad = models.IntegerField()
+    direccion = models.CharField(max_length=100, null=True)
+    edad = models.IntegerField(null=True, blank=True, default=18)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.nombre} - {self.apellido}'
-
-
-class Perfil(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
-    biografia = models.TextField()
-
-    def __str__(self):
-        return self.usuario.username
-
-
-
-
+        return f'{self.first_name} {self.last_name}'
 
 class Nutricionista(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return f'{self.usuario}'
 
-
 class Deportista(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=50)
-    
-    
+
     def __str__(self):
         return f'{self.usuario}'
     
 class Patrocinador(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100)
-
 
     def __str__(self):
         return f'{self.usuario}' 
     
-    
 class Marca(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
 
     def __str__(self):
         return f'{self.usuario}'
 
-
-
-
 class Pqrs(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
 
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
-
-
-
-
 
 #Agregue related_name='deporte_detail'
 class Deporte(models.Model):
@@ -83,11 +68,9 @@ class Deporte(models.Model):
        return f'{self.deportista}'
 
 class Contenido(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
-
-    
 
     def __str__(self):
        return f'{self.titulo}'
@@ -104,8 +87,6 @@ class Facturacion(models.Model):
     def __str__(self):
         return f'{self.nombre_usuario}'
 
-
-
 class EncabezadoFact(models.Model):
     facturacion = models.OneToOneField(Facturacion, on_delete=models.CASCADE, primary_key=True)
     nombre_usuario = models.CharField(max_length=30)
@@ -113,7 +94,6 @@ class EncabezadoFact(models.Model):
 
     def __str__(self):
         return f'{self.nombre_usuario}'
-
 
 class DetalleFact(models.Model):
     facturacion = models.OneToOneField(Facturacion, on_delete=models.CASCADE, primary_key=True)
@@ -123,7 +103,6 @@ class DetalleFact(models.Model):
 
     def __str__(self):
         return f'{self.nombre_usuario}'
-
 
 class Pagos(models.Model): 
       facturacion = models.OneToOneField(Facturacion, on_delete=models.CASCADE, primary_key=True)

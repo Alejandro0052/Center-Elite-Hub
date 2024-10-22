@@ -34,7 +34,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-#AUTH_USER_MODEL = 'EliteHub.Usuario'
+AUTH_USER_MODEL = 'Elite_Hub.Usuario'
 
 # Application definition
 
@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Elite_Hub'
- 
 ]
 
 
@@ -101,7 +100,6 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -141,7 +139,7 @@ WSGI_APPLICATION = 'Elite_Hub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
+        'NAME': 'EliteHUB',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST':'localhost',
@@ -171,7 +169,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -179,6 +177,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_I18N = True  # Activar la internacionalización
+
+USE_L10N = True  # Activar la localización
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Asegúrate de que este directorio exista
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

@@ -2,9 +2,9 @@ from django.contrib import admin
 from Elite_Hub.models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marca #, Contenido
 
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'apellido', 'numero_telefono', 'correo']
-    list_display_links = ['nombre']  # Permitir click en el nombre para ver el detalle
- #   readonly_fields = ['nombre', 'apellido', 'numero_telefono', 'correo',]
+    list_display = ['first_name', 'last_name', 'numero_telefono', 'email']
+    list_display_links = ['first_name']  # Permitir click en el nombre para ver el detalle
+    # readonly_fields = ['nombre', 'apellido', 'numero_telefono', 'correo',]
 
 
 admin.site.register(Usuario, UsuarioAdmin)
