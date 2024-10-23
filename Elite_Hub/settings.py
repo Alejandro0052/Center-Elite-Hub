@@ -50,7 +50,11 @@ INSTALLED_APPS = [
 ]
 
 
+
+
 JAZZMIN_SETTINGS = {
+   # "site_logo": "site_logo/logo1.png",  # Ruta del logo dentro de tu carpeta estática
+    #"login_logo": "login_logo/logo2.png",
     "site_title": "Elite Hub",
     "site_header": "Administración",
     "site_brand": "Elite Hub",
@@ -188,6 +192,8 @@ USE_L10N = True  # Activar la localización
 LOCALE_PATHS = [
     BASE_DIR / 'locale',  # Asegúrate de que este directorio exista
 ]
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
