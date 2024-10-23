@@ -15,4 +15,3 @@ admin.site.register(Patrocinador)
 admin.site.register(Marca)
 admin.site.register(Pqrs)
 admin.site.register(Contenido)
-
