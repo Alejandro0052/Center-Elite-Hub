@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Elite_Hub.models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marca #, Contenido
+from Elite_Hub.models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marca , Contenido, Pqrs
 
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'numero_telefono', 'email']
@@ -13,5 +13,6 @@ admin.site.register(Deportista)
 admin.site.register(Nutricionista)
 admin.site.register(Patrocinador)
 admin.site.register(Marca)
-#admin.site.register(Contenido)
+admin.site.register(Pqrs)
+admin.site.register(Contenido)
 
