@@ -1,5 +1,5 @@
 from django.db import models
-<<<<<<< HEAD
+
 
 class Usuario(models.Model):
     nombre = models.CharField(max_length=50)
@@ -32,7 +32,7 @@ class Deportista(models.Model):
     
     def __str__(self):
         return f'{self.usuario.nombre}'
-=======
+
 from django.contrib.auth.models import AbstractUser
 
 # class Usuario(models.Model):
