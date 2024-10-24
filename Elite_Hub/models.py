@@ -62,6 +62,7 @@ class Pqrs(models.Model):
 #Agregue related_name='deporte_detail'
 class Deporte(models.Model):
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
+    nombre_deporte = models.CharField(max_length=50, null=False)
     descripcion = models.TextField()
 
     def __str__(self):
@@ -71,6 +72,7 @@ class Contenido(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
+    contendido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.titulo}'
