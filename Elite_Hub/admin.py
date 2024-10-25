@@ -1,23 +1,21 @@
 from django.contrib import admin
-from Elite_Hub.models import Usuario, Deporte, Deportista, Nutricionista, Patrocinador, Marca, Contenido, Pqrs
 from django.contrib.auth.admin import UserAdmin
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-
-Usuario = get_user_model()
+from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca
 
 class UsuarioCreationForm(forms.ModelForm):
     """
-    Un formulario para crear nuevos usuarios. Incluye los campos de contraseña
-    y repite la contraseña.
+    Un formulario para crear nuevos usuarios. Incluye todos los campos personalizados,
+    junto con la contraseña.
     """
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput)
 
     class Meta:
         model = Usuario
-        fields = ('username', 'email', 'first_name', 'last_name')  # Incluimos 'username' aquí
+        fields = ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')  # Incluimos los campos personalizados aquí
 
     def clean_password2(self):
         # Verifica que ambas contraseñas coincidan
@@ -37,42 +35,41 @@ class UsuarioCreationForm(forms.ModelForm):
 
 class UsuarioChangeForm(forms.ModelForm):
     """
-    Un formulario para actualizar usuarios. Incluye todos los campos del usuario,
-    pero reemplaza el campo de contraseña por el campo de contraseña hasheada.
+    Un formulario para actualizar usuarios. Incluye todos los campos, pero
+    reemplaza el campo de contraseña por el campo de contraseña hasheada.
     """
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = Usuario
-        fields = ('username', 'email', 'password', 'is_active', 'is_staff')  # Incluimos 'username' aquí
+        fields = ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
 
     def clean_password(self):
         # Devuelve el valor original de la contraseña
         return self.initial["password"]
 
-# Registro del admin personalizado
 class UsuarioAdmin(UserAdmin):
     form = UsuarioChangeForm
     add_form = UsuarioCreationForm
 
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')  # Incluimos 'username' en 'list_display'
-    list_filter = ('is_staff',)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'groups')
     fieldsets = (
-        (None, {'fields': ('username', 'email', 'password')}),  # Añadimos 'username' en fieldsets
-        ('Información personal', {'fields': ('first_name', 'last_name')}),
-        ('Permisos', {'fields': ('is_staff', 'is_active')}),
+        (None, {'fields': ('username', 'password')}),
+        ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')}),
+        ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),  # Agregamos 'groups' y 'user_permissions'
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')}  # Añadimos 'username'
-        ),
+            'fields': ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil', 'password1', 'password2', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions'),  # Incluimos los campos personalizados y permisos
+        }),
     )
-    search_fields = ('username', 'email')  # Hacemos el campo 'username' searchable
+    search_fields = ('username', 'email')
     ordering = ('email',)
-    filter_horizontal = ()
+    filter_horizontal = ('groups', 'user_permissions')  # Para permitir la selección de múltiples permisos
 
-# Registra el nuevo UserAdmin
+# Registro del admin
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Deporte)
 admin.site.register(Deportista)
