@@ -30,6 +30,8 @@ class Nutricionista(models.Model):
     def __str__(self):
         return f'{self.usuario}'
 
+
+#EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deportista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=50)
@@ -60,7 +62,7 @@ class Pqrs(models.Model):
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
 
-#Agregue related_name='deporte_detail'
+#EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deporte(models.Model):
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
     nombre_deporte = models.CharField(max_length=50, null=False)
