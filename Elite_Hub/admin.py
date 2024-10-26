@@ -15,10 +15,9 @@ class UsuarioCreationForm(forms.ModelForm):
 
     class Meta:
         model = Usuario
-        fields = ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')  # Incluimos los campos personalizados aquí
+        fields = ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil') 
 
     def clean_password2(self):
-        # Verifica que ambas contraseñas coincidan
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
@@ -26,7 +25,6 @@ class UsuarioCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Encripta la contraseña al guardarla
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -45,7 +43,6 @@ class UsuarioChangeForm(forms.ModelForm):
         fields = ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
 
     def clean_password(self):
-        # Devuelve el valor original de la contraseña
         return self.initial["password"]
 
 class UsuarioAdmin(UserAdmin):
@@ -57,7 +54,7 @@ class UsuarioAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')}),
-        ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}),  # Agregamos 'groups' y 'user_permissions'
+        ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}), 
     )
     add_fieldsets = (
         (None, {
@@ -67,9 +64,9 @@ class UsuarioAdmin(UserAdmin):
     )
     search_fields = ('username', 'email')
     ordering = ('email',)
-    filter_horizontal = ('groups', 'user_permissions')  # Para permitir la selección de múltiples permisos
+    filter_horizontal = ('groups', 'user_permissions') 
 
-# Registro del admin
+
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Deporte)
 admin.site.register(Deportista)
