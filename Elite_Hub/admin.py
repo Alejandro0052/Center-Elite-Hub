@@ -6,10 +6,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca
 
 class UsuarioCreationForm(forms.ModelForm):
-    """
-    Un formulario para crear nuevos usuarios. Incluye todos los campos personalizados,
-    junto con la contraseña.
-    """
+
     password1 = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Confirmar contraseña', widget=forms.PasswordInput)
 
@@ -32,10 +29,7 @@ class UsuarioCreationForm(forms.ModelForm):
         return user
 
 class UsuarioChangeForm(forms.ModelForm):
-    """
-    Un formulario para actualizar usuarios. Incluye todos los campos, pero
-    reemplaza el campo de contraseña por el campo de contraseña hasheada.
-    """
+
     password = ReadOnlyPasswordHashField()
 
     class Meta:

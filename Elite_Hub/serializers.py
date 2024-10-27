@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Deportista, Patrocinador
+from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,3 +19,32 @@ class PatrocinadorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patrocinador
         fields = ['usuario']
+
+class NutricionistaSerializer(serializers.ModelSerializer):
+    usuario = UsuarioSerializer()
+
+    class Meta:
+        model =  Nutricionista
+        fields = ['usuario']
+
+class PqrsSerializer(serializers.ModelSerializer):
+    Usuario = UsuarioSerializer()
+
+    class Meta:
+        model = Pqrs
+        fields = ['usuario']
+
+class ContenidoSerializer(serializers.ModelSerializer):
+    Usuario = UsuarioSerializer()
+
+    class Meta:
+        model = Contenido
+        fields = ['usuario']
+
+class MarcasSerializer(serializers.ModelSerializer):
+    Usuario = UsuarioSerializer()
+
+    class Meta:
+        model = Marca
+        fields = ['usuario']
+
