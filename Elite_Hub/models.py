@@ -26,6 +26,7 @@ class Usuario(AbstractUser):
 
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
@@ -36,6 +37,7 @@ class Deportista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=50)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
@@ -43,6 +45,7 @@ class Deportista(models.Model):
 class Patrocinador(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}' 
@@ -50,6 +53,7 @@ class Patrocinador(models.Model):
 class Marca(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
@@ -66,6 +70,7 @@ class Pqrs(models.Model):
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
     pqrsd = models.CharField(max_length=20, choices=PQRSD)
+    imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
 
@@ -74,6 +79,7 @@ class Deporte(models.Model):
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
     nombre_deporte = models.CharField(max_length=50, null=False)
     descripcion = models.TextField()
+    imagen_repre_deporte = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.deportista}'

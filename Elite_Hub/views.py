@@ -5,6 +5,58 @@ from django.contrib.auth.models import Group
 from .models import Usuario
 from .serializers import UsuarioSerializer
 from rest_framework import generics
+from django.http import HttpResponse
+from django.urls import reverse
+from django.shortcuts import redirect
+
+
+def home(request):
+    admin_url = reverse('admin:index')
+    html = f"""
+        <html>
+            <head>
+                <title>Página de Inicio</title>
+                <style>
+                    body {{
+                        font-family: Arial, sans-serif;
+                        background-color: #f3f4f6;
+                        color: #333;
+                        text-align: center;
+                        margin: 0;
+                        padding: 20px;
+                    }}
+                    h1 {{
+                        color: #2c3e50;
+                    }}
+                    p {{
+                        color: #7f8c8d;
+                        font-size: 1.1em;
+                    }}
+                    .button {{
+                        background-color: #3498db;
+                        color: white;
+                        padding: 12px 24px;
+                        text-decoration: none;
+                        font-size: 16px;
+                        border-radius: 8px;
+                        border: none;
+                        cursor: pointer;
+                    }}
+                    .button:hover {{
+                        background-color: #2980b9;
+                    }}
+                </style>
+            </head>
+            <body>
+                <h1>Bienvenido a Elite Hub</h1>
+                <p>Haz clic en el siguiente botón para ir al administrador.</p>
+                <a href="{admin_url}">
+                    <button class="button">Ir al Admin</button>
+                </a>
+            </body>
+        </html>
+    """
+    return HttpResponse(html)
 
 @api_view(['POST'])
 def register_user(request):

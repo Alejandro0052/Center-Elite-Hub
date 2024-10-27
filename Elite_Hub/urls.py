@@ -18,9 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from . import views  
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
+     path('', views.home, name='home'), 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  #Se usa para obtener tokens de autenticacion
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
  #   path('api/', include('app_name.api_urls')),  # ACA TENGO QUE PONER LA API DE MI APLICACION CUANDO ESTE LISTA
