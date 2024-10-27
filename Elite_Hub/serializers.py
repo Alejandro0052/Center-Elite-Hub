@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido
+from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
@@ -13,6 +13,12 @@ class DeportistaSerializer(serializers.ModelSerializer):
         model = Deportista
         fields = ['usuario', 'deporte']
 
+class DeporteSerializer(serializers.ModelSerializer):
+    deportista = DeportistaSerializer()
+
+    class Meta:
+        model = Deporte
+        fields = ['deportista','deporte']
 class PatrocinadorSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
 
