@@ -55,10 +55,17 @@ class Marca(models.Model):
         return f'{self.usuario}'
 
 class Pqrs(models.Model):
+    PQRSD = [
+        ('peticion','Peticion'),
+        ('queja','Queja'),
+        ('reclamo','Reclamo'),
+        ('sugerencia','Sugerencia'),
+        ('demandas','Demandas'),
+    ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
-
+    pqrsd = models.CharField(max_length=20, choices=PQRSD)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
 
