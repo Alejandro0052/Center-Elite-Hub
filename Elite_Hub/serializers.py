@@ -4,7 +4,7 @@ from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqr
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['nombre', 'apellido','correo','direccion', 'edad'] #'imagen_perfil
+        fields = ['first_name', 'last_name','direccion', 'edad'] #'imagen_perfil
 
 class DeportistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()

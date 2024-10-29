@@ -8,6 +8,7 @@ from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
+from django.http import JsonResponse
 
 
 def home(request):
@@ -58,7 +59,7 @@ def home(request):
     """
     return HttpResponse(html)
 
-@api_view(['POST'])
+@api_view(['GET'])
 def register_user(request):
     data = request.data
     user_type = data.get('user_type')  
@@ -85,7 +86,7 @@ class UsuarioListView(generics.ListAPIView):
 
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def upload_image(request):
     user = request.user
     image = request.FILES.get('image')
@@ -96,3 +97,6 @@ def upload_image(request):
     user.imagen_de_perfil = image
     user.save()
     return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
+
+
+
