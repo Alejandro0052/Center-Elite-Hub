@@ -12,8 +12,8 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista
-from .serializers import NutricionistaSerializer, DeportistaSerializer
+from .models import Nutricionista, Deportista , Patrocinador 
+from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -127,3 +127,8 @@ class DeportistaListView(APIView):
         serializer = DeportistaSerializer(deportistas, many=True)
         return Response(serializer.data)
     
+class PatrocinadorListView(APIView):
+    def get(self, request):
+        patrocinador = Patrocinador.objects.all()
+        serializer = PatrocinadorSerializer(patrocinador, many=True)
+        return Response(serializer.data)

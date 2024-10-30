@@ -41,7 +41,7 @@ class PatrocinadorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Patrocinador
-        fields = ['usuario']
+        fields = ['usuario','deportistas_interes'] 
 
 class NutricionistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
