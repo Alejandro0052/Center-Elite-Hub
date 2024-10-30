@@ -51,8 +51,14 @@ class Deportista(models.Model):
         return f'{self.usuario}'
     
 class Patrocinador(models.Model):
+    Deportistas_Interes = [
+    ('ciclistas','Ciclistas'),
+    ('futbolistas','Futbolistas'),
+    ('corredores','Corredores'),
+    ('nadadores','Nadadores'),
+    ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    deportistas_interes = models.CharField(max_length=100)
+    deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
