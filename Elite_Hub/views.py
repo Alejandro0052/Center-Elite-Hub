@@ -13,7 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Nutricionista
-from .serializers import NutricionistaSerializer
+from .serializers import NutricionistaSerializer, DeportistaSerializer
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -92,9 +92,7 @@ def register_user(request):
     return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UsuarioListView(generics.ListAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+
 
 
 @api_view(['GET'])
@@ -112,9 +110,20 @@ def upload_image(request):
     return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
 
 
+class UsuarioListView(generics.ListAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+
 
 class NutricionistaListView(APIView):
     def get(self, request):
         nutricionistas = Nutricionista.objects.all()
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
+
+class DeportistaListView(APIView):
+    def get(self, request):
+        deportistas = deportistas.objects.all()
+        serializer = DeportistaSerializer(deportistas, many=True)
+        return Response(serializer.data)
+    
