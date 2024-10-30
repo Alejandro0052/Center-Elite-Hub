@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
 from .models import Usuario
 from .serializers import UsuarioSerializer
@@ -8,8 +9,11 @@ from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
 from django.shortcuts import redirect
-from django.http import JsonResponse
-
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import Nutricionista
+from .serializers import NutricionistaSerializer
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -62,20 +66,28 @@ def home(request):
 @api_view(['GET'])
 def register_user(request):
     data = request.data
-    user_type = data.get('user_type')  
+    user_type = data.get('user_type')
+
+    # Verificar si el username ya existe para evitar duplicados
+    username = data.get('username')
+    if Usuario.objects.filter(username=username).exists():
+        return Response({"error": "El nombre de usuario ya existe."}, status=status.HTTP_400_BAD_REQUEST)
 
     user_serializer = UsuarioSerializer(data=data)
     if user_serializer.is_valid():
         user = user_serializer.save()
 
-       
-        if user_type == 'Deportista':
-            Group.objects.get(name='Deportista').user_set.add(user)
-        elif user_type == 'Patrocinador':
-            Group.objects.get(name='Patrocinador').user_set.add(user)
-        else:
-            return Response({"error": "Tipo de usuario no válido"}, status=status.HTTP_400_BAD_REQUEST)
-        
+        # Asignación del grupo según el tipo de usuario
+        try:
+            if user_type == 'Deportista':
+                Group.objects.get(name='Deportista').user_set.add(user)
+            elif user_type == 'Patrocinador':
+                Group.objects.get(name='Patrocinador').user_set.add(user)
+            else:
+                return Response({"error": "Tipo de usuario no válido"}, status=status.HTTP_400_BAD_REQUEST)
+        except ObjectDoesNotExist:
+            return Response({"error": f"Grupo '{user_type}' no encontrado."}, status=status.HTTP_400_BAD_REQUEST)
+
         return Response(user_serializer.data, status=status.HTTP_201_CREATED)
     return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -85,8 +97,8 @@ class UsuarioListView(generics.ListAPIView):
     serializer_class = UsuarioSerializer
 
 
-
 @api_view(['GET'])
+#@permission_classes([IsAuthenticated])  
 def upload_image(request):
     user = request.user
     image = request.FILES.get('image')
@@ -94,9 +106,13 @@ def upload_image(request):
     if not image:
         return Response({"error": "No se ha proporcionado ninguna imagen."}, status=status.HTTP_400_BAD_REQUEST)
     
+    # Guardar la imagen de perfil
     user.imagen_de_perfil = image
     user.save()
     return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
 
-
-
+class NutricionistaListView(APIView):
+    def get(self, request):
+        nutricionistas = Nutricionista.objects.all()
+        serializer = NutricionistaSerializer(nutricionistas, many=True)
+        return Response(serializer.data)

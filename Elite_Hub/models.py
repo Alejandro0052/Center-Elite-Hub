@@ -27,6 +27,8 @@ class Usuario(AbstractUser):
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    especialidad = models.CharField(max_length=115,null=True, blank=True)
+
 
     def __str__(self):
         return f'{self.usuario}'
@@ -34,8 +36,14 @@ class Nutricionista(models.Model):
 
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deportista(models.Model):
+    Deporte = [
+    ('ciclismo','Ciclismo'),
+    ('futbol','Futbol'),
+    ('running','Running'),
+    ('natacion','Natacion'),
+    ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    deporte = models.CharField(max_length=50)
+    deporte = models.CharField(max_length=20, choices=Deporte)
     descripcion = models.CharField(max_length=50)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 

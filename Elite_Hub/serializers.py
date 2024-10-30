@@ -1,10 +1,25 @@
 from rest_framework import serializers
 from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte
 
+
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['username', 'password', 'email']  # Incluye todos los campos necesarios, como username y password
+
+    def create(self, validated_data):
+        user = Usuario.objects.create_user(
+            username=validated_data['username'],
+            password=validated_data['password'],
+            email=validated_data.get('email')
+        )
+        return user
+
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['first_name', 'last_name','direccion', 'edad', 'imagen_de_perfil'] #'imagen_perfil
+
 
 class DeportistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
@@ -12,6 +27,7 @@ class DeportistaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Deportista
         fields = ['usuario', 'deporte']
+
 
 class DeporteSerializer(serializers.ModelSerializer):
     deportista = DeportistaSerializer()
@@ -31,7 +47,7 @@ class NutricionistaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model =  Nutricionista
-        fields = ['usuario']
+        fields = ['usuario', 'especialidad']
 
 class PqrsSerializer(serializers.ModelSerializer):
     Usuario = UsuarioSerializer()
