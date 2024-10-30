@@ -111,6 +111,8 @@ def upload_image(request):
     user.save()
     return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
 
+
+
 class NutricionistaListView(APIView):
     def get(self, request):
         nutricionistas = Nutricionista.objects.all()

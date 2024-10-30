@@ -84,8 +84,14 @@ class Pqrs(models.Model):
 
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deporte(models.Model):
+    Deporte = [
+    ('ciclismo','Ciclismo'),
+    ('futbol','Futbol'),
+    ('running','Running'),
+    ('natacion','Natacion'),
+    ]
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
-    nombre_deporte = models.CharField(max_length=50, null=False)
+    deporte = models.CharField(max_length=20, choices=Deporte)
     descripcion = models.TextField()
     imagen_repre_deporte = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
