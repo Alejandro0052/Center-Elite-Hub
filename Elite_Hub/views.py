@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Nutricionista
+from .models import Nutricionista, Deportista
 from .serializers import NutricionistaSerializer, DeportistaSerializer
 
 def home(request):
@@ -123,7 +123,7 @@ class NutricionistaListView(APIView):
 
 class DeportistaListView(APIView):
     def get(self, request):
-        deportistas = deportistas.objects.all()
+        deportistas = Deportista.objects.all()
         serializer = DeportistaSerializer(deportistas, many=True)
         return Response(serializer.data)
     
