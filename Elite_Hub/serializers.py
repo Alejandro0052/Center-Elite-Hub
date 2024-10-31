@@ -51,23 +51,23 @@ class NutricionistaSerializer(serializers.ModelSerializer):
         fields = ['usuario', 'especialidad']
 
 class PqrsSerializer(serializers.ModelSerializer):
-    Usuario = UsuarioSerializer()
+    usuario = UsuarioSerializer()
 
     class Meta:
         model = Pqrs
         fields = ['usuario']
 
 class ContenidoSerializer(serializers.ModelSerializer):
-    Usuario = UsuarioSerializer()
+    usuario = UsuarioSerializer()
 
     class Meta:
         model = Contenido
         fields = ['usuario']
 
 class MarcasSerializer(serializers.ModelSerializer):
-    Usuario = UsuarioSerializer()
+    usuario = UsuarioSerializer()
 
     class Meta:
         model = Marca
-        fields = ['usuario', 'razon_social']
+        fields = ['usuario','razon_social']
 
