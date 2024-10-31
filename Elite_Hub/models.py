@@ -108,7 +108,7 @@ class Contenido(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
-    contendido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    contenido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.titulo}'

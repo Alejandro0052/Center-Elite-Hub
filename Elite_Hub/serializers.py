@@ -62,7 +62,7 @@ class ContenidoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contenido
-        fields = ['usuario']
+        fields = ['usuario','titulo','descripcion','contenido_imagen']
 
 class MarcasSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()

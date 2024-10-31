@@ -12,8 +12,8 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs
-from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer
+from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido
+from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -144,4 +144,10 @@ class PqrsListView(APIView):
     def get(self, request):
         pqrs = Pqrs.objects.all()
         serializer = PqrsSerializer(pqrs, many=True)
+        return Response(serializer.data)
+    
+class ContenidoListView(APIView):
+    def get(self, request):
+        contenido = Contenido.objects.all()
+        serializer = ContenidoSerializer(contenido, many=True)
         return Response(serializer.data)
