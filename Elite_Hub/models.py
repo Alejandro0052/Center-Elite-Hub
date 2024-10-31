@@ -73,7 +73,7 @@ class Marca(models.Model):
         return f'{self.usuario}'
 
 class Pqrs(models.Model):
-    PQRSD = [
+    TIPO = [
         ('peticion','Peticion'),
         ('queja','Queja'),
         ('reclamo','Reclamo'),
@@ -83,7 +83,7 @@ class Pqrs(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
-    pqrsd = models.CharField(max_length=20, choices=PQRSD)
+    tipo = models.CharField(max_length=20, choices=TIPO)
     imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
