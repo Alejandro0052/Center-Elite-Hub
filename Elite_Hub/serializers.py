@@ -69,5 +69,5 @@ class MarcasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
-        fields = ['usuario']
+        fields = ['usuario', 'razon_social']
 
