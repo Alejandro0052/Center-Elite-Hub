@@ -55,7 +55,7 @@ class PqrsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Pqrs
-        fields = ['usuario','pqrsd','asunto','descripcion','imagen_de_evidencia']
+        fields = ['usuario','tipo','asunto','descripcion','imagen_de_evidencia']
 
 class ContenidoSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
