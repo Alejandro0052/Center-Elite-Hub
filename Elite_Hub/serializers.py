@@ -1,19 +1,23 @@
 from rest_framework import serializers
 from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte
 
-
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = Usuario
-        fields = ['username', 'password', 'email']  # Incluye todos los campos necesarios, como username y password
+        fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = Usuario.objects.create_user(
+        user = Usuario(
             username=validated_data['username'],
-            password=validated_data['password'],
-            email=validated_data.get('email')
+            email=validated_data['email']
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
+
+
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:

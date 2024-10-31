@@ -14,6 +14,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
+from django.http import JsonResponse
+from rest_framework import status
+from .serializers import RegisterSerializer
+from rest_framework.decorators import api_view
+
+
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -63,51 +69,16 @@ def home(request):
     """
     return HttpResponse(html)
 
+
+
 @api_view(['GET'])
 def register_user(request):
-    data = request.data
-    user_type = data.get('user_type')
-
-    # Verificar si el username ya existe para evitar duplicados
-    username = data.get('username')
-    if Usuario.objects.filter(username=username).exists():
-        return Response({"error": "El nombre de usuario ya existe."}, status=status.HTTP_400_BAD_REQUEST)
-
-    user_serializer = UsuarioSerializer(data=data)
-    if user_serializer.is_valid():
-        user = user_serializer.save()
-
-        # Asignación del grupo según el tipo de usuario
-        try:
-            if user_type == 'Deportista':
-                Group.objects.get(name='Deportista').user_set.add(user)
-            elif user_type == 'Patrocinador':
-                Group.objects.get(name='Patrocinador').user_set.add(user)
-            else:
-                return Response({"error": "Tipo de usuario no válido"}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({"error": f"Grupo '{user_type}' no encontrado."}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-@api_view(['GET'])
-#@permission_classes([IsAuthenticated])  
-def upload_image(request):
-    user = request.user
-    image = request.FILES.get('image')
-
-    if not image:
-        return Response({"error": "No se ha proporcionado ninguna imagen."}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Guardar la imagen de perfil
-    user.imagen_de_perfil = image
-    user.save()
-    return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
+    if request.method == 'GET':
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({"message": "Registro exitoso"}, status=status.HTTP_201_CREATED)
+        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UsuarioListView(generics.ListAPIView):
