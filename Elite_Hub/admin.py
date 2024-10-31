@@ -62,7 +62,7 @@ class UsuarioAdmin(UserAdmin):
 
 
 admin.site.register(Usuario, UsuarioAdmin)
-admin.site.register(Deporte)
+# admin.site.register(Deporte)
 admin.site.register(Deportista)
 admin.site.register(Nutricionista)
 admin.site.register(Patrocinador)

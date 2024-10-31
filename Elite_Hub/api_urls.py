@@ -12,7 +12,7 @@ urlpatterns = [
     path('patrocinadores/',PatrocinadorListView.as_view(), name='patrocinadres_list'),
     path('marcas/',MarcaListView.as_view(), name='marcas_list'),
     path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
-    path('contenido/',ContenidoListView.as_view(), name='contenido_list'),
+    path('contenidos/',ContenidoListView.as_view(), name='contenidos_list'),
 
 
 ]
