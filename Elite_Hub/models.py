@@ -26,21 +26,40 @@ class Usuario(AbstractUser):
 
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    especialidad = models.CharField(max_length=115,null=True, blank=True)
+
 
     def __str__(self):
         return f'{self.usuario}'
 
+
+#EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deportista(models.Model):
+    Deporte = [
+    ('ciclismo','Ciclismo'),
+    ('futbol','Futbol'),
+    ('running','Running'),
+    ('natacion','Natacion'),
+    ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    deporte = models.CharField(max_length=50)
+    deporte = models.CharField(max_length=20, choices=Deporte)
     descripcion = models.CharField(max_length=50)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
     
 class Patrocinador(models.Model):
+    Deportistas_Interes = [
+    ('ciclistas','Ciclistas'),
+    ('futbolistas','Futbolistas'),
+    ('corredores','Corredores'),
+    ('nadadores','Nadadores'),
+    ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
-    deportistas_interes = models.CharField(max_length=100)
+    deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}' 
@@ -48,23 +67,39 @@ class Patrocinador(models.Model):
 class Marca(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
+    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
 
 class Pqrs(models.Model):
+    TIPO = [
+        ('peticion','Peticion'),
+        ('queja','Queja'),
+        ('reclamo','Reclamo'),
+        ('sugerencia','Sugerencia'),
+        ('demandas','Demandas'),
+    ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     asunto = models.CharField(max_length=30)
     descripcion = models.CharField(max_length=250)
-
+    tipo = models.CharField(max_length=20, choices=TIPO)
+    imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
 
-#Agregue related_name='deporte_detail'
+#EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deporte(models.Model):
+    Deporte = [
+    ('ciclismo','Ciclismo'),
+    ('futbol','Futbol'),
+    ('running','Running'),
+    ('natacion','Natacion'),
+    ]
     deportista = models.OneToOneField(Deportista, related_name='deporte_detail',  on_delete=models.CASCADE, primary_key=True)
-    nombre_deporte = models.CharField(max_length=50, null=False)
+    deporte = models.CharField(max_length=20, choices=Deporte)
     descripcion = models.TextField()
+    imagen_repre_deporte = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.deportista}'
@@ -73,7 +108,7 @@ class Contenido(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
-    contendido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    contenido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.titulo}'
