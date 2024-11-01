@@ -90,5 +90,5 @@ class ParametrosSerializer(serializers.ModelSerializer):
    
     class Meta:
         model = Parametros
-        fields = ['contactenos','terminos_condiciones']
+        fields = ['contactenos','terminos_condiciones', 'quienes_somos','politica_tratamiento_datos']
 
