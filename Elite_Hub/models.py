@@ -34,6 +34,14 @@ class Nutricionista(models.Model):
         return f'{self.usuario}'
 
 
+class Parametros(models.Model):
+      quienes_soomos = models.CharField(max_length=255, null=True, blank=True)
+      politica_tratamientodatos = models.CharField(max_length=255, null=True, blank=True)
+      conntactenos = models.CharField(max_length=255, null=True, blank=True)
+      terminos_condiciones = models.CharField(max_length=255, null=True, blank=True)
+
+
+
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deportista(models.Model):
     Deporte = [

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte, User
+from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -85,4 +85,10 @@ class MarcasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Marca
         fields = ['usuario','razon_social']
+
+class ParametrosSerializer(serializers.ModelSerializer):
+   
+    class Meta:
+        model = Parametros
+        fields = ['contactenos','terminos_condiciones']
 

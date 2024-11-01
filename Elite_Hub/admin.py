@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca
+from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca , Parametros
 
 class UsuarioCreationForm(forms.ModelForm):
 
@@ -69,3 +69,4 @@ admin.site.register(Patrocinador)
 admin.site.register(Marca)
 admin.site.register(Pqrs)
 admin.site.register(Contenido)
+admin.site.register(Parametros)

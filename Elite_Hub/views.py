@@ -12,9 +12,9 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido
+from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ParametrosSerializer
 from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
@@ -146,6 +146,12 @@ class ContenidoListView(APIView):
     def get(self, request):
         contenido = Contenido.objects.all()
         serializer = ContenidoSerializer(contenido, many=True)
+        return Response(serializer.data)
+    
+class ParametrosListView(APIView):
+    def get(self, request):
+        parametros = Parametros.objects.all()
+        serializer = ParametrosSerializer(parametros, many=True)
         return Response(serializer.data)
 
     
