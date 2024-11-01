@@ -69,17 +69,31 @@ def home(request):
     """
     return HttpResponse(html)
 
-
-
-@api_view(['GET'])
+@api_view(['POST'])
 def register_user(request):
-    if request.method == 'GET':
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse({"message": "Registro exitoso"}, status=status.HTTP_201_CREATED)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+# FUNCION PARA ENVIO DE IMAGENES DUDOSO AUN
+
+#@api_view(['GET'])
+#def register_user(request):
+ #   serializer = RegisterSerializer(data=request.data)
+    #if serializer.is_valid():
+       # user = serializer.save()
+        
+        # Manejo de la imagen de perfil
+      #  if 'profileImage' in request.FILES:
+     #       user.profile_image = request.FILES['profileImage']
+    #        user.save()
+
+   #     return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
+  #  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
