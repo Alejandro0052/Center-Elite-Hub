@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
+from .serializers import RegisterSerializer
 from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
@@ -69,6 +70,7 @@ def home(request):
     """
     return HttpResponse(html)
 
+
 @api_view(['POST'])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
@@ -94,6 +96,15 @@ def register_user(request):
 
    #     return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
   #  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
@@ -136,3 +147,5 @@ class ContenidoListView(APIView):
         contenido = Contenido.objects.all()
         serializer = ContenidoSerializer(contenido, many=True)
         return Response(serializer.data)
+
+    

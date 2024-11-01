@@ -8,21 +8,33 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-        user = User(
+        user = User.objects.create_user(
             username=validated_data['username'],
-            email=validated_data.get('email', '')
+            password=validated_data['password'],
+            email=validated_data['email']
         )
-        user.set_password(validated_data['password'])
-        user.save()
         return user
-
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['first_name', 'last_name','direccion', 'edad', 'imagen_de_perfil'] #'imagen_perfil
+        fields = ['first_name', 'last_name', 'direccion', 'edad','username','password']  # 'imagen_de_perfil',
 
+    def create(self, validated_data):
+        # Crea un nuevo usuario basado en el modelo Usuario
+        user = Usuario(
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            direccion=validated_data['direccion'],
+            edad=validated_data['edad'],
+            username=validated_data['username'],  
+            #imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
+
+        )
+        user.set_password(validated_data['password']) 
+        user.save()
+        return user
 
 class DeportistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
