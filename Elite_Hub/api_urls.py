@@ -13,7 +13,7 @@ urlpatterns = [
     path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
     path('contenidos/',ContenidoListView.as_view(), name='contenidos_list'),
     path('register/',RegisterView.as_view(), name='register'),
-    path('parametros/',ParametrosListView.as_view(), name='register'),
+    path('parametros/',ParametrosListView.as_view(), name='parametros'),
 
 
 ]
