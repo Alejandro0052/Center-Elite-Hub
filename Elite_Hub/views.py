@@ -74,6 +74,7 @@ def home(request):
 @api_view(['POST'])
 def register_user(request):
     serializer = RegisterSerializer(data=request.data)
+    print(serializer)
     if serializer.is_valid():
         user = serializer.save()
         return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
