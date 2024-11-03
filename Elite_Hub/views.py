@@ -14,12 +14,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
-from .serializers import RegisterSerializer, ParametrosSerializer
+from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer
 from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
@@ -70,6 +71,25 @@ def home(request):
         </html>
     """
     return HttpResponse(html)
+
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = serializer.validated_data['user']
+        
+        # Generar tokens
+        refresh = RefreshToken.for_user(user)
+        
+        # Aquí puedes incluir más información que desees devolver, como nombre y apellido
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }, status=status.HTTP_200_OK)
 
 
 class RegisterUser(APIView):

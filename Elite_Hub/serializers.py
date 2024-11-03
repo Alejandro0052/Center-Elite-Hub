@@ -1,8 +1,20 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
+from django.contrib.auth import authenticate
 
 User = get_user_model()
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate(self, attrs):
+        user = authenticate(username=attrs['username'], password=attrs['password'])
+        if not user:
+            raise serializers.ValidationError("Invalid username or password")
+        attrs['user'] = user
+        return attrs
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
