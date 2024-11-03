@@ -40,6 +40,11 @@ class Parametros(models.Model):
       contactenos = models.CharField(max_length=255, null=True, blank=True)
       terminos_condiciones = models.CharField(max_length=255, null=True, blank=True)
 
+      #class Meta:
+          #verbose_name = 'Parametro'
+         # verbose_name_plural = 'Parametros'
+        #  ordering = ['orden']
+
       def __str__(self):
         return f'{self.quienes_somos} - {self.contactenos}'
 
