@@ -19,6 +19,7 @@ from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
 from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
 
 
 
@@ -71,41 +72,16 @@ def home(request):
     return HttpResponse(html)
 
 
-@api_view(['POST'])
-def register_user(request):
-    serializer = RegisterSerializer(data=request.data)
-    print(serializer)
-    if serializer.is_valid():
-        user = serializer.save()
-        return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class RegisterUser(APIView):
+    permission_classes = [AllowAny] 
 
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Usuario registrado con exito"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# FUNCION PARA ENVIO DE IMAGENES DUDOSO AUN
-
-#@api_view(['GET'])
-#def register_user(request):
- #   serializer = RegisterSerializer(data=request.data)
-    #if serializer.is_valid():
-       # user = serializer.save()
-        
-        # Manejo de la imagen de perfil
-      #  if 'profileImage' in request.FILES:
-     #       user.profile_image = request.FILES['profileImage']
-    #        user.save()
-
-   #     return Response({"message": "Usuario registrado correctamente"}, status=status.HTTP_201_CREATED)
-  #  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class RegisterView(generics.CreateAPIView):
-    serializer_class = RegisterSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()

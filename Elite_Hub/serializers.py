@@ -1,25 +1,32 @@
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
 from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
 
+User = get_user_model()
+
 class RegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        fields = ('username', 'password', 'email')
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ('username', 'first_name', 'last_name', 'direccion', 'edad', 'password')
 
     def create(self, validated_data):
-        user = User.objects.create_user(
+        user = User(
             username=validated_data['username'],
-            password=validated_data['password'],
-            email=validated_data['email']
+            first_name=validated_data.get('first_name', ''),
+            last_name=validated_data.get('last_name', ''),
+            direccion=validated_data.get('direccion', ''),
+            edad=validated_data.get('edad', 0)
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
-
 
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['first_name', 'last_name', 'direccion', 'edad','username','password']  # 'imagen_de_perfil',
+        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password']  # 'imagen_de_perfil',
 
     def create(self, validated_data):
         # Crea un nuevo usuario basado en el modelo Usuario
