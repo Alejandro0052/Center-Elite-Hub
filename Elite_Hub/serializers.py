@@ -38,7 +38,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password' , 'imagen_de_perfil']
+        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password' ] #, 'imagen_de_perfil'
 
     def create(self, validated_data):
         user = Usuario(
@@ -47,7 +47,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             direccion=validated_data['direccion'],
             edad=validated_data['edad'],
             username=validated_data['username'],  
-            imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
+        #   imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
 
         )
         user.set_password(validated_data['password']) 
@@ -69,6 +69,15 @@ class DeporteSerializer(serializers.ModelSerializer):
         model = Deporte
         fields = ['deportista','deporte']
 
+    def create(self, validated_data):
+        usuario_data = validated_data.pop('usuario')
+        
+        usuario = Usuario.objects.create(**usuario_data)
+        
+       
+        deportista = Deportista.objects.create(usuario=usuario, **validated_data)
+        return deportista
+
 class PatrocinadorSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
 
@@ -84,13 +93,11 @@ class NutricionistaSerializer(serializers.ModelSerializer):
         fields = ['usuario', 'especialidad']
 
     def create(self, validated_data):
-        # Extraemos los datos del usuario
         usuario_data = validated_data.pop('usuario')
         
-        # Creamos la instancia de Usuario
         usuario = Usuario.objects.create(**usuario_data)
         
-        # Creamos y retornamos la instancia de Nutricionista
+       
         nutricionista = Nutricionista.objects.create(usuario=usuario, **validated_data)
         return nutricionista
 

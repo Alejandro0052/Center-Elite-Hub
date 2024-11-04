@@ -130,14 +130,10 @@ class NutricionistaCreateView(APIView):
         serializer = NutricionistaSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                {
-                    "message": "Nutricionista creado correctamente.",
-                    "data": serializer.data
-                },
-                status=status.HTTP_201_CREATED
-            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 #APIS DEPORTISTAS
@@ -146,6 +142,37 @@ class DeportistaListView(APIView):
         deportistas = Deportista.objects.all()
         serializer = DeportistaSerializer(deportistas, many=True)
         return Response(serializer.data)
+    
+    
+class DeportistaCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        usuario_data = data.pop('usuario', None)  # Extraemos los datos del usuario
+
+        if usuario_data:
+            # Creamos el usuario con los datos proporcionados
+            usuario = Usuario.objects.create(
+                username=usuario_data.get('username'),
+                first_name=usuario_data.get('first_name'),
+                last_name=usuario_data.get('last_name'),
+                direccion=usuario_data.get('direccion'),
+                edad=usuario_data.get('edad'),
+            )
+            usuario.set_password(usuario_data.get('password'))  # No olvides manejar el password correctamente
+            usuario.save()
+        else:
+            return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
+
+        # Crear el objeto Deportista con el usuario recién creado
+        deportista = Deportista(
+            usuario=usuario,
+            deporte=data.get('deporte'),
+            descripcion=data.get('descripcion')
+        )
+        deportista.save()
+
+        return JsonResponse({"message": "Deportista creado correctamente"}, status=201)
+
 
 #APIS PATROCINADORES 
 class PatrocinadorListView(APIView):
