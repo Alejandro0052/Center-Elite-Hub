@@ -158,12 +158,12 @@ class DeportistaCreateView(APIView):
                 direccion=usuario_data.get('direccion'),
                 edad=usuario_data.get('edad'),
             )
-            usuario.set_password(usuario_data.get('password'))  # No olvides manejar el password correctamente
+            usuario.set_password(usuario_data.get('password'))  
             usuario.save()
         else:
             return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
 
-        # Crear el objeto Deportista con el usuario recién creado
+     
         deportista = Deportista(
             usuario=usuario,
             deporte=data.get('deporte'),
