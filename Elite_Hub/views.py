@@ -78,11 +78,8 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         
         user = serializer.validated_data['user']
-        
-        # Generar tokens
-        refresh = RefreshToken.for_user(user)
-        
-        # Aquí puedes incluir más información que desees devolver, como nombre y apellido
+        refresh = RefreshToken.for_user(user)   
+        # ACA PUEDO INCLUIR MAS CAMPOS SI QUIERO PERSONALIZARLA
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
@@ -102,24 +99,55 @@ class RegisterUser(APIView):
             return Response({"message": "Usuario registrado con exito"}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#APIS USUARIOS
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
+class UsuarioCreateView(generics.CreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        response.data = {
+            "message": "Usuario registrado con éxito",
+            "data": response.data 
+        }
+        return response
+    
+
+#APIS NUTRICIONISTAS
 class NutricionistaListView(APIView):
     def get(self, request):
         nutricionistas = Nutricionista.objects.all()
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
+    
+class NutricionistaCreateView(APIView):
+    def post(self, request):
+        serializer = NutricionistaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": "Nutricionista creado correctamente.",
+                    "data": serializer.data
+                },
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+#APIS DEPORTISTAS
 class DeportistaListView(APIView):
     def get(self, request):
         deportistas = Deportista.objects.all()
         serializer = DeportistaSerializer(deportistas, many=True)
         return Response(serializer.data)
-    
+
+#APIS PATROCINADORES 
 class PatrocinadorListView(APIView):
     def get(self, request):
         patrocinador = Patrocinador.objects.all()
@@ -127,11 +155,13 @@ class PatrocinadorListView(APIView):
         return Response(serializer.data)
     
 
+#APIS MARCAS
 class MarcaListView(APIView):
     def get(self, request):
         marca = Marca.objects.all()
         serializer = MarcasSerializer(marca, many=True)
         return Response(serializer.data)
+
 
 class PqrsListView(APIView):
     def get(self, request):

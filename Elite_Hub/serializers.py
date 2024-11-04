@@ -38,17 +38,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password']  # 'imagen_de_perfil',
+        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password' , 'imagen_de_perfil']
 
     def create(self, validated_data):
-        # Crea un nuevo usuario basado en el modelo Usuario
         user = Usuario(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             direccion=validated_data['direccion'],
             edad=validated_data['edad'],
             username=validated_data['username'],  
-            #imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
+            imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
 
         )
         user.set_password(validated_data['password']) 
@@ -81,8 +80,20 @@ class NutricionistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
 
     class Meta:
-        model =  Nutricionista
-        fields = ['usuario','especialidad']
+        model = Nutricionista
+        fields = ['usuario', 'especialidad']
+
+    def create(self, validated_data):
+        # Extraemos los datos del usuario
+        usuario_data = validated_data.pop('usuario')
+        
+        # Creamos la instancia de Usuario
+        usuario = Usuario.objects.create(**usuario_data)
+        
+        # Creamos y retornamos la instancia de Nutricionista
+        nutricionista = Nutricionista.objects.create(usuario=usuario, **validated_data)
+        return nutricionista
+
 
 class PqrsSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
