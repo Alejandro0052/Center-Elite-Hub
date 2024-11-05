@@ -147,10 +147,9 @@ class DeportistaListView(APIView):
 class DeportistaCreateView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
-        usuario_data = data.pop('usuario', None)  # Extraemos los datos del usuario
+        usuario_data = data.pop('usuario', None)  
 
         if usuario_data:
-            # Creamos el usuario con los datos proporcionados
             usuario = Usuario.objects.create(
                 username=usuario_data.get('username'),
                 first_name=usuario_data.get('first_name'),
@@ -181,6 +180,33 @@ class PatrocinadorListView(APIView):
         serializer = PatrocinadorSerializer(patrocinador, many=True)
         return Response(serializer.data)
     
+class PatrocinadorCreateView(APIView):
+     def post(self, request, *args, **kwargs):
+        data = request.data
+        usuario_data = data.pop('usuario', None)  
+
+        if usuario_data:
+            usuario = Usuario.objects.create(
+                username=usuario_data.get('username'),
+                first_name=usuario_data.get('first_name'),
+                last_name=usuario_data.get('last_name'),
+                direccion=usuario_data.get('direccion'),
+                edad=usuario_data.get('edad'),
+            )
+            usuario.set_password(usuario_data.get('password'))  
+            usuario.save()
+        else:
+            return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
+
+     
+        deportista = Patrocinador(
+            usuario=usuario,
+            deportistas_interes=data.get('deportistas_interes'),
+           
+        )
+        deportista.save()
+
+        return JsonResponse({"message": "Patrocinador creado correctamente"}, status=201)
 
 #APIS MARCAS
 class MarcaListView(APIView):
@@ -188,6 +214,7 @@ class MarcaListView(APIView):
         marca = Marca.objects.all()
         serializer = MarcasSerializer(marca, many=True)
         return Response(serializer.data)
+
 
 
 class PqrsListView(APIView):

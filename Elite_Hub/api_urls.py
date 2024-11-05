@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView
 from .views import NutricionistaListView, DeportistaListView, PatrocinadorListView, MarcaListView, PqrsListView, ContenidoListView
-from .views import RegisterUser, ParametrosListView, DeportistaCreateView
+from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView
 urlpatterns = [
 
  #Usuarios
@@ -18,6 +18,9 @@ urlpatterns = [
 
 #Patrocinadores
     path('patrocinadores/',PatrocinadorListView.as_view(), name='patrocinadres_list'),
+    path('patrocinadores/create/',PatrocinadorCreateView.as_view(), name='patrocinadres_list'),
+
+    
 
 #Marcas
     path('marcas/',MarcaListView.as_view(), name='marcas_list'),
