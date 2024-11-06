@@ -102,12 +102,25 @@ class NutricionistaSerializer(serializers.ModelSerializer):
         return nutricionista
 
 
-class PqrsSerializer(serializers.ModelSerializer):
-    usuario = UsuarioSerializer()
 
+class PqrsSerializer(serializers.ModelSerializer):
+    usuario = serializers.CharField()  
     class Meta:
         model = Pqrs
-        fields = ['usuario','tipo','asunto','descripcion','imagen_de_evidencia']
+        fields = ['usuario', 'tipo', 'asunto', 'descripcion']  #,'imagen_de_evidencia'
+
+    def validate_usuario(self, username):
+        try:
+            usuario = Usuario.objects.get(username=username)
+            return usuario
+        except Usuario.DoesNotExist:
+            raise serializers.ValidationError("Error.")
+    
+    def create(self, validated_data):
+        usuario = validated_data.pop('usuario')
+        return Pqrs.objects.create(usuario=usuario, **validated_data)
+
+
 
 class ContenidoSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()

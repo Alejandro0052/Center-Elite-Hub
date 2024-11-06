@@ -243,13 +243,24 @@ class MarcaCreateView(APIView):
 
         return JsonResponse({"message": "Su marca se ha creado correctamente"}, status=201)
 
-
+#APIS PQRS
 
 class PqrsListView(APIView):
     def get(self, request):
         pqrs = Pqrs.objects.all()
         serializer = PqrsSerializer(pqrs, many=True)
         return Response(serializer.data)
+    
+class PqrsCreateView(APIView):
+    def post(self, request):
+        serializer = PqrsSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 class ContenidoListView(APIView):
     def get(self, request):
