@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 from .serializers import UsuarioSerializer
 from rest_framework import generics
@@ -148,8 +149,10 @@ class NutricionistaCreateView(APIView):
     def post(self, request):
         serializer = NutricionistaSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.save()
+            nutricionista = serializer.save()  
+            user = nutricionista.usuario  
             
+         
             refresh = RefreshToken.for_user(user)
             access = refresh.access_token
             
@@ -160,7 +163,6 @@ class NutricionistaCreateView(APIView):
             }, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 
@@ -175,7 +177,7 @@ class DeportistaListView(APIView):
 class DeportistaCreateView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
-        usuario_data = data.pop('usuario', None)  
+        usuario_data = data.pop('usuario', None)
 
         if usuario_data:
             usuario = Usuario.objects.create(
@@ -185,12 +187,11 @@ class DeportistaCreateView(APIView):
                 direccion=usuario_data.get('direccion'),
                 edad=usuario_data.get('edad'),
             )
-            usuario.set_password(usuario_data.get('password'))  
+            usuario.set_password(usuario_data.get('password'))
             usuario.save()
         else:
             return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
 
-     
         deportista = Deportista(
             usuario=usuario,
             deporte=data.get('deporte'),
@@ -198,8 +199,14 @@ class DeportistaCreateView(APIView):
         )
         deportista.save()
 
-        return JsonResponse({"message": "Deportista creado correctamente"}, status=201)
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
 
+        return JsonResponse({
+            "message": "Deportista creado correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
 
 #APIS PATROCINADORES 
 class PatrocinadorListView(APIView):
@@ -207,11 +214,11 @@ class PatrocinadorListView(APIView):
         patrocinador = Patrocinador.objects.all()
         serializer = PatrocinadorSerializer(patrocinador, many=True)
         return Response(serializer.data)
-    
+  
 class PatrocinadorCreateView(APIView):
-     def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         data = request.data
-        usuario_data = data.pop('usuario', None)  
+        usuario_data = data.pop('usuario', None)
 
         if usuario_data:
             usuario = Usuario.objects.create(
@@ -221,20 +228,26 @@ class PatrocinadorCreateView(APIView):
                 direccion=usuario_data.get('direccion'),
                 edad=usuario_data.get('edad'),
             )
-            usuario.set_password(usuario_data.get('password'))  
+            usuario.set_password(usuario_data.get('password'))
             usuario.save()
         else:
             return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
 
-     
         patrocinador = Patrocinador(
             usuario=usuario,
             deportistas_interes=data.get('deportistas_interes'),
-           
         )
         patrocinador.save()
 
-        return JsonResponse({"message": "Patrocinador creado correctamente"}, status=201)
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
+
+        return JsonResponse({
+            "message": "Patrocinador creado correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
+
 
 #APIS MARCAS
 class MarcaListView(APIView):
@@ -269,8 +282,15 @@ class MarcaCreateView(APIView):
         )
         marca.save()
 
-        return JsonResponse({"message": "Su marca se ha creado correctamente"}, status=201)
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
 
+        return JsonResponse({
+            "message": "Tu marca ha sido creada correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
+    
 #APIS PQRS
 
 class PqrsListView(APIView):
