@@ -79,7 +79,6 @@ class LoginView(APIView):
         
         user = serializer.validated_data['user']
         refresh = RefreshToken.for_user(user)   
-        # ACA PUEDO INCLUIR MAS CAMPOS SI QUIERO PERSONALIZARLA
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
@@ -89,14 +88,25 @@ class LoginView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+
+
 class RegisterUser(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Usuario registrado con exito"}, status=status.HTTP_201_CREATED)
+            user = serializer.save() 
+
+            refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
+
+            return Response({
+                "message": "Usuario registrado con éxito",
+                "access": str(access),
+                "refresh": str(refresh),
+            }, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #APIS USUARIOS
@@ -105,15 +115,23 @@ class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
+
 class UsuarioCreateView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
+    
+        usuario = Usuario.objects.get(id=response.data['id'])
+        refresh = RefreshToken.for_user(usuario)
         response.data = {
             "message": "Usuario registrado con éxito",
-            "data": response.data 
+            "data": response.data,
+            "token": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
         }
         return response
     
@@ -125,12 +143,22 @@ class NutricionistaListView(APIView):
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
     
+
 class NutricionistaCreateView(APIView):
     def post(self, request):
         serializer = NutricionistaSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            user = serializer.save()
+            
+            refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
+            
+            return Response({
+                "message": "Nutricionista creado con éxito",
+                "access": str(access),
+                "refresh": str(refresh),
+            }, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
