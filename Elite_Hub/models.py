@@ -96,9 +96,9 @@ class Pqrs(models.Model):
         ('demanda','Demanda'),
     ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    asunto = models.CharField(max_length=30)
-    descripcion = models.CharField(max_length=250)
-    tipo = models.CharField(max_length=20, choices=TIPO)
+    tipo = models.CharField(max_length=120, choices=TIPO)
+    asunto = models.CharField(max_length=1130)
+    descripcion = models.CharField(max_length=255)
     imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 

@@ -43,6 +43,7 @@ class UsuarioChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+
 def obtener_tipo_usuario(usuario):
     if hasattr(usuario, 'deportista'):
         return "Deportista"
@@ -58,42 +59,47 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
 
-    
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-
+    # Título
     p.drawString(100, height - 50, "Reporte de Usuarios")
 
-   
+    # Información de Totales
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
- #   total_usuarios = total_nutricionistas + total_deportistas + total_marcas + total_patrocinadores
+    total_usuarios = queryset.count() 
+
+   
+    #total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
 
  
     p.drawString(100, height - 100, f"Total de Deportistas: {total_deportistas}")
     p.drawString(100, height - 120, f"Total de Patrocinadores: {total_patrocinadores}")
     p.drawString(100, height - 140, f"Total de Marcas: {total_marcas}")
     p.drawString(100, height - 160, f"Total de Nutricionistas: {total_nutricionistas}")
-#    p.drawString(100, height - 180, f"Total de Usuarios: {total_usuarios}")
-
-    
-    p.line(100, height - 170, width - 100, height - 170)
+   # p.drawString(100, height - 180, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
+    p.drawString(100, height - 200, f"Total de Usuarios: {total_usuarios}")
 
 
-    
-    y_position = height - 190
+    p.line(100, height - 210, width - 100, height - 210)
+
+  
+    y_position = height - 230
+
     for usuario in queryset:
         tipo_usuario = obtener_tipo_usuario(usuario)
         p.drawString(100, y_position, f"Usuario: {usuario.username} - Tipo: {tipo_usuario}")
         y_position -= 20
+
+        # Si se alcanza el final de la página, añade una nueva página
         if y_position < 50:
             p.showPage()  
             y_position = height - 50
 
-
+    # Guarda y cierra el PDF
     p.save()
     return response
 
