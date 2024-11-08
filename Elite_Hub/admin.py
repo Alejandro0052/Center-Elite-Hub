@@ -55,43 +55,45 @@ def obtener_tipo_usuario(usuario):
     return "Sin Asignar"
 
 def generar_reporte_pdf_tipos(modeladmin, request, queryset):
-    # Crea la respuesta HTTP para descargar el PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
 
-    # Crea el objeto Canvas para el PDF
+    
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-    # Título del reporte
-    p.drawString(100, height - 50, "Reporte de Usuarios por Tipo")
 
-    # Contadores de usuarios por tipo
+    p.drawString(100, height - 50, "Reporte de Usuarios")
+
+   
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
+ #   total_usuarios = total_nutricionistas + total_deportistas + total_marcas + total_patrocinadores
 
-    # Imprime los conteos de usuarios en el PDF
+ 
     p.drawString(100, height - 100, f"Total de Deportistas: {total_deportistas}")
     p.drawString(100, height - 120, f"Total de Patrocinadores: {total_patrocinadores}")
     p.drawString(100, height - 140, f"Total de Marcas: {total_marcas}")
     p.drawString(100, height - 160, f"Total de Nutricionistas: {total_nutricionistas}")
+#    p.drawString(100, height - 180, f"Total de Usuarios: {total_usuarios}")
 
-    # Agrega una línea divisoria
+    
     p.line(100, height - 170, width - 100, height - 170)
 
-    # Agrega los detalles de cada usuario seleccionado
+
+    
     y_position = height - 190
     for usuario in queryset:
         tipo_usuario = obtener_tipo_usuario(usuario)
         p.drawString(100, y_position, f"Usuario: {usuario.username} - Tipo: {tipo_usuario}")
         y_position -= 20
         if y_position < 50:
-            p.showPage()  # Nueva página si se agota el espacio
+            p.showPage()  
             y_position = height - 50
 
-    # Cierra el PDF
+
     p.save()
     return response
 
