@@ -7,6 +7,7 @@ from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido,
 from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from openpyxl import Workbook
 
 class UsuarioCreationForm(forms.ModelForm):
 
@@ -62,10 +63,10 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
     p = canvas.Canvas(response, pagesize=letter)
     width, height = letter
 
-    # Título
+
     p.drawString(100, height - 50, "Reporte de Usuarios")
 
-    # Información de Totales
+    
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
@@ -94,16 +95,61 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
         p.drawString(100, y_position, f"Usuario: {usuario.username} - Tipo: {tipo_usuario}")
         y_position -= 20
 
-        # Si se alcanza el final de la página, añade una nueva página
+
         if y_position < 50:
             p.showPage()  
             y_position = height - 50
 
-    # Guarda y cierra el PDF
+
     p.save()
     return response
 
 generar_reporte_pdf_tipos.short_description = "Generar reporte PDF de usuarios por tipo"
+
+
+def generar_reporte_excel_tipos(modeladmin, request, queryset):
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Reporte de Usuarios"
+
+    
+    ws.append(["Usuario", "Tipo"])
+
+    # Contar los totales de cada tipo de usuario
+    total_deportistas = Deportista.objects.count()
+    total_patrocinadores = Patrocinador.objects.count()
+    total_marcas = Marca.objects.count()
+    total_nutricionistas = Nutricionista.objects.count()
+    total_usuarios = queryset.count()
+   # total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
+
+    # Escribir los totales en el archivo Excel
+    ws.append([])
+    ws.append(["Total de Deportistas", total_deportistas])
+    ws.append(["Total de Patrocinadores", total_patrocinadores])
+    ws.append(["Total de Marcas", total_marcas])
+    ws.append(["Total de Nutricionistas", total_nutricionistas])
+ #   ws.append(["Total de Usuarios Sin Asignar", total_sin_asignar])
+    ws.append(["Total de Usuarios", total_usuarios])
+
+
+    ws.append([])
+
+
+    for usuario in queryset:
+        tipo_usuario = obtener_tipo_usuario(usuario)
+        ws.append([usuario.username, tipo_usuario])
+
+
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.xlsx"'
+    
+
+    wb.save(response)
+    return response
+
+generar_reporte_excel_tipos.short_description = "Generar reporte Excel de usuarios por tipo"
 
 class UsuarioAdmin(UserAdmin):
     form = UsuarioChangeForm
@@ -114,22 +160,23 @@ class UsuarioAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')}),
-        ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions')}), 
+        ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups')}), 
     )
+    #, 'user_permissions
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil', 'password1', 'password2', 'is_staff', 'is_active', 'is_superuser', 'groups', 'user_permissions'),  # Incluimos los campos personalizados y permisos
+            'fields': ('username', 'email', 'first_name', 'last_name', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil', 'password1', 'password2', 'is_staff', 'is_active', 'is_superuser', 'groups'),  # , 'user_permissions'
         }),
     )
     search_fields = ('username', 'email')
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions') 
-    actions = [generar_reporte_pdf_tipos]
+    actions = [generar_reporte_pdf_tipos,generar_reporte_excel_tipos]
+
 
 
 admin.site.register(Usuario, UsuarioAdmin)
-# admin.site.register(Deporte)
 admin.site.register(Deportista)
 admin.site.register(Nutricionista)
 admin.site.register(Patrocinador)
