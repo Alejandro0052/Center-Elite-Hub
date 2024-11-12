@@ -67,30 +67,48 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
+    total_usuarios = Usuario.objects.count()
     total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
     
     labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
     sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_sin_asignar]  
 
-    # Crear el gráfico circular
+    
     plt.figure(figsize=(6, 6))
     plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
     plt.axis('equal')
 
-    # Guardar el gráfico en un archivo temporal
+    
     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_file:
         plt.savefig(tmp_file.name, format='png')
         plt.close()
 
-        # Generar el PDF
+       
         response = HttpResponse(content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
         p = canvas.Canvas(response, pagesize=letter)
         width, height = letter
 
-        y_position = height - 50  # Posición inicial para escribir texto
+        y_position = height - 50 
+       
 
-        # Escribir el resumen de los totales en la parte superior
+        
+         
+        
+      
+        p.drawString(100, y_position, "Listado de Usuarios")
+        y_position -= 20
+
+        for usuario in queryset:
+            tipo_usuario = obtener_tipo_usuario(usuario)
+            p.drawString(100, y_position, f" {usuario.first_name} | {usuario.email} | {tipo_usuario}")
+            y_position -= 20
+
+            
+            if y_position < 100:
+                p.showPage()  
+                y_position = height - 50 
+        
         p.drawString(100, y_position, "Resumen de Usuarios")
         y_position -= 30
         p.drawString(100, y_position, f"Total de Deportistas: {total_deportistas}")
@@ -103,29 +121,17 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
         y_position -= 20
         p.drawString(100, y_position, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
         
-        y_position -= 30  # Dejar un espacio antes de comenzar la lista de usuarios
-        
-        # Listar los usuarios (nombre, correo, tipo)
-        p.drawString(100, y_position, "Listado de Usuarios")
-        y_position -= 20
+        y_position -= 30 
 
-        for usuario in queryset:
-            tipo_usuario = obtener_tipo_usuario(usuario)
-            p.drawString(100, y_position, f" {usuario.first_name} | {usuario.email} | {tipo_usuario}")
-            y_position -= 20
-
-            # Verificar si el contenido se está acercando al final de la página
-            if y_position < 100:
-                p.showPage()  # Saltar de página
-                y_position = height - 50  # Reiniciar la posición vertical para la nueva página
+        if y_position - 320 < 0:  
+            p.showPage()  
+            y_position = height - 50  
         
-        # Verificar si el espacio es suficiente para el gráfico
-        if y_position - 320 < 0:  # Si no hay suficiente espacio para el gráfico
-            p.showPage()  # Crear nueva página
-            y_position = height - 50  # Reiniciar la posición vertical para la nueva página
-        
-        # Insertar el gráfico en el PDF
+       
         p.drawImage(tmp_file.name, 150, y_position - 320, width=300, height=300)
+
+        y_position -=40
+        p.drawString(100, y_position, f"Total de Usuarios: {total_usuarios}")
 
         p.save()
         plt.close()
