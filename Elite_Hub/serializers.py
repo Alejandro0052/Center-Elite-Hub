@@ -38,12 +38,13 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password' ] #, 'imagen_de_perfil'
+        fields = ['id','username','first_name', 'last_name', 'direccion', 'edad','password','email'] #, 'imagen_de_perfil'
 
     def create(self, validated_data):
         user = Usuario(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
+            email=validated_data['email'],
             direccion=validated_data['direccion'],
             edad=validated_data['edad'],
             username=validated_data['username'],  

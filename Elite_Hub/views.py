@@ -86,6 +86,7 @@ class LoginView(APIView):
             'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
+            'email':user.email,
         }, status=status.HTTP_200_OK)
 
 
@@ -131,7 +132,7 @@ class UsuarioCreateView(generics.CreateAPIView):
             "data": response.data,
             "token": {
                 "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "access": str(refresh.access_token)
             }
         }
         return response
