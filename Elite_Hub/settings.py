@@ -36,8 +36,6 @@ ALLOWED_HOSTS = ["*"]
 
 AUTH_USER_MODEL = 'Elite_Hub.Usuario'
 
-# Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
