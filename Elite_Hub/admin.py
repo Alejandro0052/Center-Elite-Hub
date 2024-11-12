@@ -5,7 +5,6 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca , Parametros
 from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
 from io import BytesIO
@@ -13,6 +12,8 @@ import tempfile
 import matplotlib
 matplotlib.use('Agg')  # Usar el backend Agg (sin GUI)
 import matplotlib.pyplot as plt
+from reportlab.lib.pagesizes import letter
+
 
 class UsuarioCreationForm(forms.ModelForm):
 
@@ -49,7 +50,6 @@ class UsuarioChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
-
 def obtener_tipo_usuario(usuario):
     if hasattr(usuario, 'deportista'):
         return "Deportista"
@@ -68,9 +68,9 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
     total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
-
+    
     labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
-    sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_sin_asignar]
+    sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_sin_asignar]  
 
     # Crear el gráfico circular
     plt.figure(figsize=(6, 6))
@@ -88,20 +88,50 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
         p = canvas.Canvas(response, pagesize=letter)
         width, height = letter
 
-        p.drawString(100, height - 50, "Reporte de Usuarios")
-        p.drawString(100, height - 100, f"Total de Deportistas: {total_deportistas}")
-        p.drawString(100, height - 120, f"Total de Patrocinadores: {total_patrocinadores}")
-        p.drawString(100, height - 140, f"Total de Marcas: {total_marcas}")
-        p.drawString(100, height - 160, f"Total de Nutricionistas: {total_nutricionistas}")
-     #   p.drawString(100, height - 180, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
+        y_position = height - 50  # Posición inicial para escribir texto
 
+        # Escribir el resumen de los totales en la parte superior
+        p.drawString(100, y_position, "Resumen de Usuarios")
+        y_position -= 30
+        p.drawString(100, y_position, f"Total de Deportistas: {total_deportistas}")
+        y_position -= 20
+        p.drawString(100, y_position, f"Total de Patrocinadores: {total_patrocinadores}")
+        y_position -= 20
+        p.drawString(100, y_position, f"Total de Marcas: {total_marcas}")
+        y_position -= 20
+        p.drawString(100, y_position, f"Total de Nutricionistas: {total_nutricionistas}")
+        y_position -= 20
+        p.drawString(100, y_position, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
+        
+        y_position -= 30  # Dejar un espacio antes de comenzar la lista de usuarios
+        
+        # Listar los usuarios (nombre, correo, tipo)
+        p.drawString(100, y_position, "Listado de Usuarios")
+        y_position -= 20
+
+        for usuario in queryset:
+            tipo_usuario = obtener_tipo_usuario(usuario)
+            p.drawString(100, y_position, f" {usuario.first_name} | {usuario.email} | {tipo_usuario}")
+            y_position -= 20
+
+            # Verificar si el contenido se está acercando al final de la página
+            if y_position < 100:
+                p.showPage()  # Saltar de página
+                y_position = height - 50  # Reiniciar la posición vertical para la nueva página
+        
+        # Verificar si el espacio es suficiente para el gráfico
+        if y_position - 320 < 0:  # Si no hay suficiente espacio para el gráfico
+            p.showPage()  # Crear nueva página
+            y_position = height - 50  # Reiniciar la posición vertical para la nueva página
+        
         # Insertar el gráfico en el PDF
-        p.drawImage(tmp_file.name, 150, height - 450, width=300, height=300)
+        p.drawImage(tmp_file.name, 150, y_position - 320, width=300, height=300)
 
         p.save()
         plt.close()
 
     return response
+
 generar_reporte_pdf_tipos.short_description = "Generar reporte PDF de usuarios por tipo"
 
 
