@@ -8,6 +8,11 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
+from io import BytesIO
+import tempfile
+import matplotlib
+matplotlib.use('Agg')  # Usar el backend Agg (sin GUI)
+import matplotlib.pyplot as plt
 
 class UsuarioCreationForm(forms.ModelForm):
 
@@ -57,53 +62,46 @@ def obtener_tipo_usuario(usuario):
     return "Sin Asignar"
 
 def generar_reporte_pdf_tipos(modeladmin, request, queryset):
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
-
-    p = canvas.Canvas(response, pagesize=letter)
-    width, height = letter
-
-
-    p.drawString(100, height - 50, "Reporte de Usuarios")
-
-    
+    # Obtener datos para el gráfico
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
-    total_usuarios = queryset.count() 
+    total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
 
-   
-    #total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
+    labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
+    sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_sin_asignar]
 
- 
-    p.drawString(100, height - 100, f"Total de Deportistas: {total_deportistas}")
-    p.drawString(100, height - 120, f"Total de Patrocinadores: {total_patrocinadores}")
-    p.drawString(100, height - 140, f"Total de Marcas: {total_marcas}")
-    p.drawString(100, height - 160, f"Total de Nutricionistas: {total_nutricionistas}")
-   # p.drawString(100, height - 180, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
-    p.drawString(100, height - 200, f"Total de Usuarios: {total_usuarios}")
+    # Crear el gráfico circular
+    plt.figure(figsize=(6, 6))
+    plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
+    plt.axis('equal')
 
+    # Guardar el gráfico en un archivo temporal
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_file:
+        plt.savefig(tmp_file.name, format='png')
+        plt.close()
 
-    p.line(100, height - 210, width - 100, height - 210)
+        # Generar el PDF
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
+        p = canvas.Canvas(response, pagesize=letter)
+        width, height = letter
 
-  
-    y_position = height - 230
+        p.drawString(100, height - 50, "Reporte de Usuarios")
+        p.drawString(100, height - 100, f"Total de Deportistas: {total_deportistas}")
+        p.drawString(100, height - 120, f"Total de Patrocinadores: {total_patrocinadores}")
+        p.drawString(100, height - 140, f"Total de Marcas: {total_marcas}")
+        p.drawString(100, height - 160, f"Total de Nutricionistas: {total_nutricionistas}")
+     #   p.drawString(100, height - 180, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
 
-    for usuario in queryset:
-        tipo_usuario = obtener_tipo_usuario(usuario)
-        p.drawString(100, y_position, f"Usuario: {usuario.username} - Tipo: {tipo_usuario}")
-        y_position -= 20
+        # Insertar el gráfico en el PDF
+        p.drawImage(tmp_file.name, 150, height - 450, width=300, height=300)
 
+        p.save()
+        plt.close()
 
-        if y_position < 50:
-            p.showPage()  
-            y_position = height - 50
-
-
-    p.save()
     return response
-
 generar_reporte_pdf_tipos.short_description = "Generar reporte PDF de usuarios por tipo"
 
 
