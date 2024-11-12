@@ -1,18 +1,41 @@
 from django.urls import path
-from .views import register_user, upload_image, UsuarioListView
+from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView
 from .views import NutricionistaListView, DeportistaListView, PatrocinadorListView, MarcaListView, PqrsListView, ContenidoListView
-
+from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView, MarcaCreateView, PqrsCreateView
 urlpatterns = [
 
-    path('register/', register_user, name='register_user'),
-    path('upload-image/', upload_image, name='upload_image'),
+ #Usuarios
     path('usuarios/', UsuarioListView.as_view(), name='usuario_list'),
+    path('usuarios/create/', UsuarioCreateView.as_view(), name='usuario-create'),
+
+#Nutricinistas
     path('nutricionistas/', NutricionistaListView.as_view(), name='nutricionistas_list'),
+    path('nutricionistas/create/', NutricionistaCreateView.as_view(), name='nutricionistas_list'),
+
+#Deportistas
     path('deportistas/', DeportistaListView.as_view(), name='deportistas_list'),
+    path('deportistas/create/', DeportistaCreateView.as_view(), name='deportistas_list'),
+
+#Patrocinadores
     path('patrocinadores/',PatrocinadorListView.as_view(), name='patrocinadres_list'),
+    path('patrocinadores/create/',PatrocinadorCreateView.as_view(), name='patrocinadres_list'),
+
+    
+
+#Marcas
     path('marcas/',MarcaListView.as_view(), name='marcas_list'),
-    path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
+    path('marcas/create/',MarcaCreateView.as_view(), name='marcas_list'),
+
+#Register
+    path('register/',RegisterUser.as_view(), name='register'),
+
+#Pqrs
+path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
+path('pqrs/create/',PqrsCreateView.as_view(), name='pqrs_list'),
+
+#Otras URLs
     path('contenidos/',ContenidoListView.as_view(), name='contenidos_list'),
+    path('parametros/',ParametrosListView.as_view(), name='parametros'),
 
 
 ]

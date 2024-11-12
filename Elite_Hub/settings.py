@@ -32,11 +32,9 @@ SECRET_KEY = 'django-insecure-!w!3_ies1bkw_wcy*1p)0dr=zt%j0!il63&yo$@gb#a0uiaoc+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 AUTH_USER_MODEL = 'Elite_Hub.Usuario'
-
-# Application definition
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -55,7 +53,8 @@ INSTALLED_APPS = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
+    "http://localhost:3000", 
+    "http://localhost:4200",
 ]
 
 

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import Group
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 from .serializers import UsuarioSerializer
 from rest_framework import generics
@@ -12,8 +13,17 @@ from django.shortcuts import redirect
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido
+from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
+from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer
+from django.http import JsonResponse
+from rest_framework import status
+from .serializers import RegisterSerializer
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
 
 def home(request):
     admin_url = reverse('admin:index')
@@ -63,82 +73,225 @@ def home(request):
     """
     return HttpResponse(html)
 
-@api_view(['GET'])
-def register_user(request):
-    data = request.data
-    user_type = data.get('user_type')
-
-    # Verificar si el username ya existe para evitar duplicados
-    username = data.get('username')
-    if Usuario.objects.filter(username=username).exists():
-        return Response({"error": "El nombre de usuario ya existe."}, status=status.HTTP_400_BAD_REQUEST)
-
-    user_serializer = UsuarioSerializer(data=data)
-    if user_serializer.is_valid():
-        user = user_serializer.save()
-
-        # Asignación del grupo según el tipo de usuario
-        try:
-            if user_type == 'Deportista':
-                Group.objects.get(name='Deportista').user_set.add(user)
-            elif user_type == 'Patrocinador':
-                Group.objects.get(name='Patrocinador').user_set.add(user)
-            else:
-                return Response({"error": "Tipo de usuario no válido"}, status=status.HTTP_400_BAD_REQUEST)
-        except ObjectDoesNotExist:
-            return Response({"error": f"Grupo '{user_type}' no encontrado."}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class LoginView(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)   
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }, status=status.HTTP_200_OK)
 
 
 
 
+class RegisterUser(APIView):
+    permission_classes = [AllowAny]
 
-@api_view(['GET'])
-#@permission_classes([IsAuthenticated])  
-def upload_image(request):
-    user = request.user
-    image = request.FILES.get('image')
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save() 
 
-    if not image:
-        return Response({"error": "No se ha proporcionado ninguna imagen."}, status=status.HTTP_400_BAD_REQUEST)
-    
-    # Guardar la imagen de perfil
-    user.imagen_de_perfil = image
-    user.save()
-    return Response({"message": "Imagen subida exitosamente."}, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
 
+            return Response({
+                "message": "Usuario registrado con éxito",
+                "access": str(access),
+                "refresh": str(refresh),
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#APIS USUARIOS
 
 class UsuarioListView(generics.ListAPIView):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
 
 
+class UsuarioCreateView(generics.CreateAPIView):
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+    
+        usuario = Usuario.objects.get(id=response.data['id'])
+        refresh = RefreshToken.for_user(usuario)
+        response.data = {
+            "message": "Usuario registrado con éxito",
+            "data": response.data,
+            "token": {
+                "refresh": str(refresh),
+                "access": str(refresh.access_token),
+            }
+        }
+        return response
+    
+
+#APIS NUTRICIONISTAS
 class NutricionistaListView(APIView):
     def get(self, request):
         nutricionistas = Nutricionista.objects.all()
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
+    
 
+class NutricionistaCreateView(APIView):
+    def post(self, request):
+        serializer = NutricionistaSerializer(data=request.data)
+        if serializer.is_valid():
+            nutricionista = serializer.save()  
+            user = nutricionista.usuario  
+            
+         
+            refresh = RefreshToken.for_user(user)
+            access = refresh.access_token
+            
+            return Response({
+                "message": "Nutricionista creado con éxito",
+                "access": str(access),
+                "refresh": str(refresh),
+            }, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+#APIS DEPORTISTAS
 class DeportistaListView(APIView):
     def get(self, request):
         deportistas = Deportista.objects.all()
         serializer = DeportistaSerializer(deportistas, many=True)
         return Response(serializer.data)
     
+    
+class DeportistaCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        usuario_data = data.pop('usuario', None)
+
+        if usuario_data:
+            usuario = Usuario.objects.create(
+                username=usuario_data.get('username'),
+                first_name=usuario_data.get('first_name'),
+                last_name=usuario_data.get('last_name'),
+                direccion=usuario_data.get('direccion'),
+                edad=usuario_data.get('edad'),
+            )
+            usuario.set_password(usuario_data.get('password'))
+            usuario.save()
+        else:
+            return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
+
+        deportista = Deportista(
+            usuario=usuario,
+            deporte=data.get('deporte'),
+            descripcion=data.get('descripcion')
+        )
+        deportista.save()
+
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
+
+        return JsonResponse({
+            "message": "Deportista creado correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
+
+#APIS PATROCINADORES 
 class PatrocinadorListView(APIView):
     def get(self, request):
         patrocinador = Patrocinador.objects.all()
         serializer = PatrocinadorSerializer(patrocinador, many=True)
         return Response(serializer.data)
-    
+  
+class PatrocinadorCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        usuario_data = data.pop('usuario', None)
 
+        if usuario_data:
+            usuario = Usuario.objects.create(
+                username=usuario_data.get('username'),
+                first_name=usuario_data.get('first_name'),
+                last_name=usuario_data.get('last_name'),
+                direccion=usuario_data.get('direccion'),
+                edad=usuario_data.get('edad'),
+            )
+            usuario.set_password(usuario_data.get('password'))
+            usuario.save()
+        else:
+            return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
+
+        patrocinador = Patrocinador(
+            usuario=usuario,
+            deportistas_interes=data.get('deportistas_interes'),
+        )
+        patrocinador.save()
+
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
+
+        return JsonResponse({
+            "message": "Patrocinador creado correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
+
+
+#APIS MARCAS
 class MarcaListView(APIView):
     def get(self, request):
         marca = Marca.objects.all()
         serializer = MarcasSerializer(marca, many=True)
         return Response(serializer.data)
+    
+class MarcaCreateView(APIView):    
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        usuario_data = data.pop('usuario', None)  
+
+        if usuario_data:
+            usuario = Usuario.objects.create(
+                username=usuario_data.get('username'),
+                first_name=usuario_data.get('first_name'),
+                last_name=usuario_data.get('last_name'),
+                direccion=usuario_data.get('direccion'),
+                edad=usuario_data.get('edad'),
+            )
+            usuario.set_password(usuario_data.get('password'))  
+            usuario.save()
+        else:
+            return JsonResponse({"error": "Datos del usuario faltantes"}, status=400)
+
+     
+        marca = Marca(
+            usuario=usuario,
+            razon_social=data.get('razon_social'),
+           
+        )
+        marca.save()
+
+        refresh = RefreshToken.for_user(usuario)
+        access = refresh.access_token
+
+        return JsonResponse({
+            "message": "Tu marca ha sido creada correctamente",
+            "access": str(access),
+            "refresh": str(refresh),
+        }, status=201)
+    
+#APIS PQRS
 
 class PqrsListView(APIView):
     def get(self, request):
@@ -146,8 +299,27 @@ class PqrsListView(APIView):
         serializer = PqrsSerializer(pqrs, many=True)
         return Response(serializer.data)
     
+class PqrsCreateView(APIView):
+    def post(self, request):
+        serializer = PqrsSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 class ContenidoListView(APIView):
     def get(self, request):
         contenido = Contenido.objects.all()
         serializer = ContenidoSerializer(contenido, many=True)
         return Response(serializer.data)
+    
+class ParametrosListView(APIView):
+    def get(self, request):
+        parametros = Parametros.objects.all()
+        serializer = ParametrosSerializer(parametros, many=True)
+        return Response(serializer.data)
+
+    
