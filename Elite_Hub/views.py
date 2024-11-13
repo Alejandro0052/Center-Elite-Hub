@@ -185,6 +185,7 @@ class DeportistaCreateView(APIView):
                 username=usuario_data.get('username'),
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
+                email=usuario_data.get('email'),
                 direccion=usuario_data.get('direccion'),
                 edad=usuario_data.get('edad'),
             )
@@ -227,6 +228,7 @@ class PatrocinadorCreateView(APIView):
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
                 direccion=usuario_data.get('direccion'),
+                email=usuario_data.get('email'),
                 edad=usuario_data.get('edad'),
             )
             usuario.set_password(usuario_data.get('password'))
@@ -268,6 +270,7 @@ class MarcaCreateView(APIView):
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
                 direccion=usuario_data.get('direccion'),
+                email=usuario_data.get('email'),
                 edad=usuario_data.get('edad'),
             )
             usuario.set_password(usuario_data.get('password'))  

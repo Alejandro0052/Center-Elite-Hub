@@ -48,7 +48,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             direccion=validated_data['direccion'],
             edad=validated_data['edad'],
             username=validated_data['username'],  
-        #   imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
+            #imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
 
         )
         user.set_password(validated_data['password']) 
