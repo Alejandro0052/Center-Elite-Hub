@@ -31,6 +31,10 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     path('api/', include('Elite_Hub.api_urls')), 
+    path('reporte_usuarios/', views.reporte_usuarios, name='reporte_usuarios'),
+   # path('admin/reporte-datos/', views.reporte_datos_admin, name='reporte_datos_admin'),
+    
+    
 
 ]
 

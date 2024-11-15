@@ -137,7 +137,7 @@ ROOT_URLCONF = 'Elite_Hub.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "Templates"], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -149,7 +149,6 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'Elite_Hub.wsgi.application'
 
 

@@ -1,18 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
-from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca , Parametros
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
-from io import BytesIO
 import tempfile
 import matplotlib
 matplotlib.use('Agg')  # Usar el backend Agg (sin GUI)
 import matplotlib.pyplot as plt
 from reportlab.lib.pagesizes import letter
+from django.urls import path
+
 
 
 class UsuarioCreationForm(forms.ModelForm):
@@ -62,7 +62,7 @@ def obtener_tipo_usuario(usuario):
     return "Sin Asignar"
 
 def generar_reporte_pdf_tipos(modeladmin, request, queryset):
-    # Obtener datos para el gráfico
+    # Contar los usuarios por tipo
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
@@ -73,68 +73,79 @@ def generar_reporte_pdf_tipos(modeladmin, request, queryset):
     labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
     sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_sin_asignar]  
 
-    
+  
     plt.figure(figsize=(6, 6))
     plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90)
     plt.axis('equal')
 
+   
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as pie_chart_file:
+        plt.savefig(pie_chart_file.name, format='png')
+        plt.close()
+
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(labels, sizes, color=['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'])
+    plt.xlabel("Tipo de Usuario")
+    plt.ylabel("Cantidad")
+    plt.title("Cantidad de Usuarios por Tipo")
+
+  
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as bar_chart_file:
+        plt.savefig(bar_chart_file.name, format='png')
+        plt.close()
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    y_position = height - 50
+
     
-    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp_file:
-        plt.savefig(tmp_file.name, format='png')
-        plt.close()
+    p.drawString(100, y_position, "Listado de Usuarios")
+    y_position -= 20
+
+
+    for usuario in queryset:
+        tipo_usuario = obtener_tipo_usuario(usuario)
+        p.drawString(100, y_position, f"{usuario.first_name} | {usuario.email} | {tipo_usuario}")
+        y_position -= 20
 
        
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="reporte_usuarios_tipos.pdf"'
-        p = canvas.Canvas(response, pagesize=letter)
-        width, height = letter
+        if y_position < 100:
+            p.showPage()
+            y_position = height - 50
 
-        y_position = height - 50 
-       
 
-        
-         
-        
-      
-        p.drawString(100, y_position, "Listado de Usuarios")
-        y_position -= 20
+    p.drawString(100, y_position, "Resumen de Usuarios")
+    y_position -= 30
+    p.drawString(100, y_position, f"Total de Deportistas: {total_deportistas}")
+    y_position -= 20
+    p.drawString(100, y_position, f"Total de Patrocinadores: {total_patrocinadores}")
+    y_position -= 20
+    p.drawString(100, y_position, f"Total de Marcas: {total_marcas}")
+    y_position -= 20
+    p.drawString(100, y_position, f"Total de Nutricionistas: {total_nutricionistas}")
+    y_position -= 20
+    p.drawString(100, y_position, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
+    y_position -= 30
 
-        for usuario in queryset:
-            tipo_usuario = obtener_tipo_usuario(usuario)
-            p.drawString(100, y_position, f" {usuario.first_name} | {usuario.email} | {tipo_usuario}")
-            y_position -= 20
 
-            
-            if y_position < 100:
-                p.showPage()  
-                y_position = height - 50 
-        
-        p.drawString(100, y_position, "Resumen de Usuarios")
-        y_position -= 30
-        p.drawString(100, y_position, f"Total de Deportistas: {total_deportistas}")
-        y_position -= 20
-        p.drawString(100, y_position, f"Total de Patrocinadores: {total_patrocinadores}")
-        y_position -= 20
-        p.drawString(100, y_position, f"Total de Marcas: {total_marcas}")
-        y_position -= 20
-        p.drawString(100, y_position, f"Total de Nutricionistas: {total_nutricionistas}")
-        y_position -= 20
-        p.drawString(100, y_position, f"Total de Usuarios Sin Asignar: {total_sin_asignar}")
-        
-        y_position -= 30 
+    if y_position - 320 < 0:
+        p.showPage()
+        y_position = height - 50
+    
+   
+    p.drawImage(pie_chart_file.name, 100, y_position - 320, width=200, height=200)
 
-        if y_position - 320 < 0:  
-            p.showPage()  
-            y_position = height - 50  
-        
-       
-        p.drawImage(tmp_file.name, 150, y_position - 320, width=300, height=300)
+    p.drawImage(bar_chart_file.name, 320, y_position - 320, width=200, height=200)
 
-        y_position -=40
-        p.drawString(100, y_position, f"Total de Usuarios: {total_usuarios}")
+    y_position -= 40
+    p.drawString(100, y_position, f"Total de Usuarios: {total_usuarios}")
 
-        p.save()
-        plt.close()
+  
+    p.save()
 
     return response
 
@@ -196,7 +207,7 @@ class UsuarioAdmin(UserAdmin):
         ('Información personal', {'fields': ('first_name', 'last_name', 'email', 'numero_telefono', 'direccion', 'edad', 'imagen_de_perfil')}),
         ('Permisos', {'fields': ('is_staff', 'is_active', 'is_superuser', 'groups')}), 
     )
-    #, 'user_permissions
+
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -207,6 +218,8 @@ class UsuarioAdmin(UserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions') 
     actions = [generar_reporte_pdf_tipos,generar_reporte_excel_tipos]
+
+
 
 
 
