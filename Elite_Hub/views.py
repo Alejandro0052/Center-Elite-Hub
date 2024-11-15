@@ -82,8 +82,6 @@ class LoginView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
             'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
             'email':user.email,
         }, status=status.HTTP_200_OK)
 
@@ -324,7 +322,7 @@ class ParametrosListView(APIView):
         serializer = ParametrosSerializer(parametros, many=True)
         return Response(serializer.data)
     
-    
+
 def reporte_usuarios(request):
     # Obtener los datos de usuarios por tipo
     total_deportistas = Deportista.objects.count()
