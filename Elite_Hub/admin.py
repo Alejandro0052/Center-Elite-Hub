@@ -62,7 +62,6 @@ def obtener_tipo_usuario(usuario):
     return "Sin Asignar"
 
 def generar_reporte_pdf_tipos(modeladmin, request, queryset):
-    # Contar los usuarios por tipo
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
@@ -161,21 +160,17 @@ def generar_reporte_excel_tipos(modeladmin, request, queryset):
     
     ws.append(["Usuario", "Tipo"])
 
-    # Contar los totales de cada tipo de usuario
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
     total_nutricionistas = Nutricionista.objects.count()
     total_usuarios = queryset.count()
-   # total_sin_asignar = sum(1 for usuario in queryset if obtener_tipo_usuario(usuario) == "Sin Asignar")
-
-    # Escribir los totales en el archivo Excel
+ 
     ws.append([])
     ws.append(["Total de Deportistas", total_deportistas])
     ws.append(["Total de Patrocinadores", total_patrocinadores])
     ws.append(["Total de Marcas", total_marcas])
     ws.append(["Total de Nutricionistas", total_nutricionistas])
- #   ws.append(["Total de Usuarios Sin Asignar", total_sin_asignar])
     ws.append(["Total de Usuarios", total_usuarios])
 
 
@@ -220,14 +215,25 @@ class UsuarioAdmin(UserAdmin):
     actions = [generar_reporte_pdf_tipos,generar_reporte_excel_tipos]
 
 
+class DeportistaAdmin(admin.ModelAdmin):
+    list_display = ('usuario','deporte')
 
 
+class NutricionistasAdmin(admin.ModelAdmin):
+    list_display = ('usuario','especialidad')
+
+
+class PatrocinadorAdmin(admin.ModelAdmin):
+    list_display = ('usuario','deportistas_interes')
+
+class MarcasAdmin(admin.ModelAdmin):
+    list_display = ('usuario','razon_social')
 
 admin.site.register(Usuario, UsuarioAdmin)
-admin.site.register(Deportista)
-admin.site.register(Nutricionista)
-admin.site.register(Patrocinador)
-admin.site.register(Marca)
+admin.site.register(Deportista, DeportistaAdmin)
+admin.site.register(Nutricionista, NutricionistasAdmin)
+admin.site.register(Patrocinador, PatrocinadorAdmin)
+admin.site.register(Marca, MarcasAdmin)
 admin.site.register(Pqrs)
 admin.site.register(Contenido)
 admin.site.register(Parametros)

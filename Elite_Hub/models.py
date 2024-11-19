@@ -23,10 +23,10 @@ class Nutricionista(models.Model):
 
 
 class Parametros(models.Model):
-      quienes_somos = models.TextField(max_length=255, null=True, blank=True)
-      politica_tratamiento_datos = models.TextField(max_length=255, null=True, blank=True)
+      quienes_somos = models.TextField(max_length=900, null=True, blank=True)
+      politica_tratamiento_datos = models.TextField(max_length=600, null=True, blank=True)
       contactenos = models.CharField(max_length=255, null=True, blank=True)
-      terminos_condiciones = models.TextField(max_length=255, null=True, blank=True)
+      terminos_condiciones = models.TextField(max_length=600, null=True, blank=True)
 
       #class Meta:
           #verbose_name = 'Parametro'
