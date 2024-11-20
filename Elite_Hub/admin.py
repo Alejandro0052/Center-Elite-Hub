@@ -237,3 +237,4 @@ admin.site.register(Marca, MarcasAdmin)
 admin.site.register(Pqrs)
 admin.site.register(Contenido)
 admin.site.register(Parametros)
+
