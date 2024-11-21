@@ -216,7 +216,7 @@ class UsuarioAdmin(UserAdmin):
 
 
 class DeportistaAdmin(admin.ModelAdmin):
-    list_display = ('usuario','deporte')
+    list_display = ('usuario','deporte','descripcion','imagen_de_perfil')
 
 
 class NutricionistasAdmin(admin.ModelAdmin):
