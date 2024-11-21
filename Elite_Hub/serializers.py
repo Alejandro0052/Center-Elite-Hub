@@ -84,7 +84,15 @@ class PatrocinadorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Patrocinador
-        fields = ['usuario','deportistas_interes'] 
+        fields = ['usuario','imagen_de_perfil','deportistas_interes','descripcion'] 
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
 class NutricionistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()

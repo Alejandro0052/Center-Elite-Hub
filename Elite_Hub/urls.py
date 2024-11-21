@@ -21,6 +21,8 @@ from . import views
 #from .views import register_user
 from .views import RegisterUser, LoginView
 #from .views import  #register_user, upload_image, UsuarioListView
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -33,8 +35,8 @@ urlpatterns = [
     path('api/', include('Elite_Hub.api_urls')), 
     path('reporte_usuarios/', views.reporte_usuarios, name='reporte_usuarios'),
    # path('admin/reporte-datos/', views.reporte_datos_admin, name='reporte_datos_admin'),
-    
-    
-
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

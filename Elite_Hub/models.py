@@ -62,8 +62,8 @@ class Patrocinador(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
-    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
-
+    imagen_de_perfil = models.ImageField(upload_to='patrocinadores/', blank=True, null=True)
+    descripcion = models.TextField()
     def __str__(self):
         return f'{self.usuario}' 
     
