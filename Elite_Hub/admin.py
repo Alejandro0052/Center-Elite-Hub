@@ -224,7 +224,7 @@ class NutricionistasAdmin(admin.ModelAdmin):
 
 
 class PatrocinadorAdmin(admin.ModelAdmin):
-    list_display = ('usuario','deportistas_interes')
+    list_display = ('usuario','deportistas_interes', 'descripcion', 'imagen_de_perfil')
 
 class MarcasAdmin(admin.ModelAdmin):
     list_display = ('usuario','razon_social')

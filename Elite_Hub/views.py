@@ -225,6 +225,7 @@ class PatrocinadorCreateView(APIView):
                 direccion=usuario_data.get('direccion'),
                 email=usuario_data.get('email'),
                 edad=usuario_data.get('edad'),
+                imagen_de_perfil=usuario_data.get('imagen_de_perfil'),
             )
             usuario.set_password(usuario_data.get('password'))
             usuario.save()
