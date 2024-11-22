@@ -93,7 +93,7 @@ class NutricionistaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Nutricionista
-        fields = ['usuario', 'especialidad']
+        fields = ['usuario', 'especialidad','imagen_de_perfil']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
@@ -103,6 +103,14 @@ class NutricionistaSerializer(serializers.ModelSerializer):
        
         nutricionista = Nutricionista.objects.create(usuario=usuario, **validated_data)
         return nutricionista
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
 
 
@@ -137,7 +145,15 @@ class MarcasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
-        fields = ['usuario','razon_social']
+        fields = ['usuario','razon_social','imagen_de_perfil']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
 class ParametrosSerializer(serializers.ModelSerializer):
    
