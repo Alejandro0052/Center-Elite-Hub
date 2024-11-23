@@ -220,14 +220,14 @@ class DeportistaAdmin(admin.ModelAdmin):
 
 
 class NutricionistasAdmin(admin.ModelAdmin):
-    list_display = ('usuario','especialidad')
+    list_display = ('usuario','especialidad', 'imagen_de_perfil')
 
 
 class PatrocinadorAdmin(admin.ModelAdmin):
     list_display = ('usuario','deportistas_interes', 'descripcion', 'imagen_de_perfil')
 
 class MarcasAdmin(admin.ModelAdmin):
-    list_display = ('usuario','razon_social')
+    list_display = ('usuario','razon_social', 'imagen_de_perfil')
 
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Deportista, DeportistaAdmin)
