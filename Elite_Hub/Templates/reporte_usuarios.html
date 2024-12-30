@@ -1,0 +1,58 @@
+<!-- reporte_usuarios.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Usuarios por Tipo</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Reporte de Usuarios por Tipo</h2>
+    <p>Total de Usuarios: {{ total_usuarios }}</p>
+    <p>Total de Deportistas: {{ total_deportistas }}</p>
+    <p>Total de Patrocinadores: {{ total_patrocinadores }}</p>
+    <p>Total de Marcas: {{ total_marcas }}</p>
+    <p>Total de Nutricionistas: {{ total_nutricionistas }}</p>
+    <p>Total de Usuarios Sin Asignar: {{ total_sin_asignar }}</p>
+
+    <canvas id="reporteChart" width="400" height="400"></canvas>
+    <script>
+        // Obtener los datos pasados desde Django como un objeto JSON
+        var labels = JSON.parse('{{ labels|escapejs }}');
+        var sizes = JSON.parse('{{ sizes|escapejs }}');
+    
+        var ctx = document.getElementById('reporteChart').getContext('2d');
+        var reporteChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: sizes,
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                let value = context.raw || '';
+                                return `${label}: ${value} usuarios`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+</body>
+</html>
