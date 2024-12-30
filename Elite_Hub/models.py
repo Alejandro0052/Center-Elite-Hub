@@ -23,10 +23,10 @@ class Nutricionista(models.Model):
 
 
 class Parametros(models.Model):
-      quienes_somos = models.TextField(max_length=255, null=True, blank=True)
-      politica_tratamiento_datos = models.TextField(max_length=255, null=True, blank=True)
+      quienes_somos = models.TextField(max_length=900, null=True, blank=True)
+      politica_tratamiento_datos = models.TextField(max_length=600, null=True, blank=True)
       contactenos = models.CharField(max_length=255, null=True, blank=True)
-      terminos_condiciones = models.TextField(max_length=255, null=True, blank=True)
+      terminos_condiciones = models.TextField(max_length=600, null=True, blank=True)
 
       #class Meta:
           #verbose_name = 'Parametro'
@@ -62,8 +62,8 @@ class Patrocinador(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
-    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
-
+    imagen_de_perfil = models.ImageField(upload_to='patrocinadores/', blank=True, null=True)
+    descripcion = models.TextField()
     def __str__(self):
         return f'{self.usuario}' 
     

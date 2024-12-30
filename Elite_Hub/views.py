@@ -1,16 +1,11 @@
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.models import Group
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 from .serializers import UsuarioSerializer
 from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
-from django.shortcuts import redirect
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
@@ -19,9 +14,12 @@ from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializ
 from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
-from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
+from django.db.models import Count
+
 
 
 
@@ -84,9 +82,9 @@ class LoginView(APIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
             'username': user.username,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
         }, status=status.HTTP_200_OK)
+    
+    
 
 
 
@@ -131,7 +129,7 @@ class UsuarioCreateView(generics.CreateAPIView):
             "data": response.data,
             "token": {
                 "refresh": str(refresh),
-                "access": str(refresh.access_token),
+                "access": str(refresh.access_token)
             }
         }
         return response
@@ -144,7 +142,6 @@ class NutricionistaListView(APIView):
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
     
-
 class NutricionistaCreateView(APIView):
     def post(self, request):
         serializer = NutricionistaSerializer(data=request.data)
@@ -184,6 +181,7 @@ class DeportistaCreateView(APIView):
                 username=usuario_data.get('username'),
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
+                email=usuario_data.get('email'),
                 direccion=usuario_data.get('direccion'),
                 edad=usuario_data.get('edad'),
             )
@@ -226,7 +224,9 @@ class PatrocinadorCreateView(APIView):
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
                 direccion=usuario_data.get('direccion'),
+                email=usuario_data.get('email'),
                 edad=usuario_data.get('edad'),
+                imagen_de_perfil=usuario_data.get('imagen_de_perfil'),
             )
             usuario.set_password(usuario_data.get('password'))
             usuario.save()
@@ -267,6 +267,7 @@ class MarcaCreateView(APIView):
                 first_name=usuario_data.get('first_name'),
                 last_name=usuario_data.get('last_name'),
                 direccion=usuario_data.get('direccion'),
+                email=usuario_data.get('email'),
                 edad=usuario_data.get('edad'),
             )
             usuario.set_password(usuario_data.get('password'))  
@@ -321,5 +322,31 @@ class ParametrosListView(APIView):
         parametros = Parametros.objects.all()
         serializer = ParametrosSerializer(parametros, many=True)
         return Response(serializer.data)
-
     
+
+def reporte_usuarios(request):
+    # Obtener los datos de usuarios por tipo
+    total_deportistas = Deportista.objects.count()
+    total_patrocinadores = Patrocinador.objects.count()
+    total_marcas = Marca.objects.count()
+    total_nutricionistas = Nutricionista.objects.count()
+    total_usuarios = Usuario.objects.count()
+    (
+    total_usuarios + total_patrocinadores + total_marcas + total_nutricionistas
+    )
+
+
+    labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
+    sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_usuarios]
+
+    context = {
+        'labels': labels,
+        'sizes': sizes,
+        'total_usuarios': total_usuarios,
+        'total_deportistas': total_deportistas,
+        'total_patrocinadores': total_patrocinadores,
+        'total_marcas': total_marcas,
+        'total_nutricionistas': total_nutricionistas,
+        'total_usuarios': total_usuarios,
+    }
+    return render(request, 'reporte_usuarios.html', context)

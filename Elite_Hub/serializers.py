@@ -16,6 +16,23 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            user = authenticate(username=username, password=password)
+            if not user:
+                raise serializers.ValidationError('Invalid credentials.')
+            data['user'] = user
+        else:
+            raise serializers.ValidationError('Both username and password are required.')
+        return data
+    
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -38,16 +55,17 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username','first_name', 'last_name', 'direccion', 'edad','password' ] #, 'imagen_de_perfil'
+        fields = ['id','username','first_name', 'last_name', 'direccion', 'edad','password','email'] #, 'imagen_de_perfil'
 
     def create(self, validated_data):
         user = Usuario(
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
+            email=validated_data['email'],
             direccion=validated_data['direccion'],
             edad=validated_data['edad'],
             username=validated_data['username'],  
-        #   imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
+            #imagen_de_perfil=validated_data.get('imagen_de_perfil'),  
 
         )
         user.set_password(validated_data['password']) 
@@ -59,38 +77,40 @@ class DeportistaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Deportista
-        fields = ['usuario', 'deporte','descripcion']
+        fields = ['usuario', 'deporte','descripcion', 'imagen_de_perfil']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
-
-class DeporteSerializer(serializers.ModelSerializer):
-    deportista = DeportistaSerializer()
-
-    class Meta:
-        model = Deporte
-        fields = ['deportista','deporte']
-
-    def create(self, validated_data):
-        usuario_data = validated_data.pop('usuario')
-        
-        usuario = Usuario.objects.create(**usuario_data)
-        
-       
-        deportista = Deportista.objects.create(usuario=usuario, **validated_data)
-        return deportista
 
 class PatrocinadorSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
 
     class Meta:
         model = Patrocinador
-        fields = ['usuario','deportistas_interes'] 
+        fields = ['usuario','imagen_de_perfil','deportistas_interes','descripcion'] 
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
+    
+    
 
 class NutricionistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
 
     class Meta:
         model = Nutricionista
-        fields = ['usuario', 'especialidad']
+        fields = ['usuario', 'especialidad','imagen_de_perfil']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
@@ -100,6 +120,14 @@ class NutricionistaSerializer(serializers.ModelSerializer):
        
         nutricionista = Nutricionista.objects.create(usuario=usuario, **validated_data)
         return nutricionista
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
 
 
@@ -134,11 +162,36 @@ class MarcasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
-        fields = ['usuario','razon_social']
+        fields = ['usuario','razon_social','imagen_de_perfil']
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        # Genera la URL completa para la imagen
+        request = self.context.get('request')
+        if instance.imagen_de_perfil and request:
+            representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
+        return representation
 
 class ParametrosSerializer(serializers.ModelSerializer):
    
     class Meta:
         model = Parametros
         fields = ['contactenos','terminos_condiciones', 'quienes_somos','politica_tratamiento_datos']
+
+class DeporteSerializer(serializers.ModelSerializer):
+    deportista = DeportistaSerializer()
+
+    class Meta:
+        model = Deporte
+        fields = ['deportista','deporte']
+
+    def create(self, validated_data):
+        usuario_data = validated_data.pop('usuario')
+        
+        usuario = Usuario.objects.create(**usuario_data)
+        
+       
+        deportista = Deportista.objects.create(usuario=usuario, **validated_data)
+        return deportista
+    
 
