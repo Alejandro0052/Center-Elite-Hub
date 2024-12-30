@@ -193,3 +193,5 @@ class DeporteSerializer(serializers.ModelSerializer):
        
         deportista = Deportista.objects.create(usuario=usuario, **validated_data)
         return deportista
+    
+

@@ -19,7 +19,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.db.models import Count
-#import pandas as pd
+
 
 
 
@@ -142,7 +142,6 @@ class NutricionistaListView(APIView):
         serializer = NutricionistaSerializer(nutricionistas, many=True)
         return Response(serializer.data)
     
-
 class NutricionistaCreateView(APIView):
     def post(self, request):
         serializer = NutricionistaSerializer(data=request.data)
@@ -336,7 +335,7 @@ def reporte_usuarios(request):
     total_usuarios + total_patrocinadores + total_marcas + total_nutricionistas
     )
 
-    # Datos para el gráfico
+
     labels = ['Deportistas', 'Patrocinadores', 'Marcas', 'Nutricionistas', 'Sin Asignar']
     sizes = [total_deportistas, total_patrocinadores, total_marcas, total_nutricionistas, total_usuarios]
 
