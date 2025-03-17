@@ -44,7 +44,10 @@ class Deportista(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=20, choices=Deporte)
-    descripcion = models.CharField(max_length=50)
+   # descripcion = models.CharField(max_length=50)
+    descripcion = models.TextField(max_length=50,default="Sin descripción")
+
+    
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):

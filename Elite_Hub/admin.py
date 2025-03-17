@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin.sites import AlreadyRegistered
 
 from Elite_Hub.models import Usuario,Deporte,Deportista,Nutricionista, Patrocinador, Marca, Contenido
  
@@ -14,13 +15,16 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 
 
-admin.site.register(Usuario,  UsuarioAdmin)
-admin.site.register(Deporte)
+#admin.site.register(Usuario,  UsuarioAdmin)
+#admin.site.register(Usuario)
+#admin.site.register(Deporte)
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.models import Group
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Contenido, Nutricionista, Marca
+
+
 
 class UsuarioCreationForm(forms.ModelForm):
 

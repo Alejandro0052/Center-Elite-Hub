@@ -5,7 +5,7 @@ from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqr
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['username', 'password', 'email']  # Incluye todos los campos necesarios, como username y password
+        fields = ['username', 'password', 'email']  
 
     def create(self, validated_data):
         user = Usuario.objects.create_user(
