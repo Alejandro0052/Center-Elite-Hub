@@ -229,6 +229,9 @@ class PatrocinadorAdmin(admin.ModelAdmin):
 class MarcasAdmin(admin.ModelAdmin):
     list_display = ('usuario','razon_social', 'imagen_de_perfil')
 
+class ParametrosAdmin(admin.ModelAdmin):
+    list_display = ('quienes_somos','contactenos','terminos_condiciones')
+
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Deportista, DeportistaAdmin)
 admin.site.register(Nutricionista, NutricionistasAdmin)
@@ -236,4 +239,4 @@ admin.site.register(Patrocinador, PatrocinadorAdmin)
 admin.site.register(Marca, MarcasAdmin)
 admin.site.register(Pqrs)
 admin.site.register(Contenido)
-admin.site.register(Parametros)
+admin.site.register(Parametros, ParametrosAdmin)

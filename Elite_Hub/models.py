@@ -2,18 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
 
-# class Usuario(models.Model):
-#     nombre = models.CharField(max_length=50)
-#     apellido = models.CharField(max_length=50)
-#     numero_telefono = models.CharField(max_length=15)
-#     correo = models.EmailField(max_length=80, unique=True)
-#     fecha_registro = models.DateField(auto_now_add=True)
-#     direccion = models.CharField(max_length=100)
-#     edad = models.IntegerField()
-#     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
-
-#     def __str__(self):
-#         return f'{self.nombre} - {self.apellido}'
 
 class Usuario(AbstractUser):
     numero_telefono = models.CharField(max_length=15)
@@ -34,6 +22,21 @@ class Nutricionista(models.Model):
         return f'{self.usuario}'
 
 
+class Parametros(models.Model):
+      quienes_somos = models.TextField(max_length=900, null=True, blank=True)
+      politica_tratamiento_datos = models.TextField(max_length=600, null=True, blank=True)
+      contactenos = models.CharField(max_length=255, null=True, blank=True)
+      terminos_condiciones = models.TextField(max_length=600, null=True, blank=True)
+
+      #class Meta:
+          #verbose_name = 'Parametro'
+         # verbose_name_plural = 'Parametros'
+        #  ordering = ['orden']
+
+      def __str__(self):
+        return f'{self.quienes_somos} - {self.contactenos}'
+
+
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
 class Deportista(models.Model):
     Deporte = [
@@ -44,10 +47,7 @@ class Deportista(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=20, choices=Deporte)
-   # descripcion = models.CharField(max_length=50)
-    descripcion = models.TextField(max_length=50,default="Sin descripción")
-
-    
+    descripcion = models.CharField(max_length=50)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
     def __str__(self):
@@ -62,8 +62,8 @@ class Patrocinador(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
-    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
-
+    imagen_de_perfil = models.ImageField(upload_to='patrocinadores/', blank=True, null=True)
+    descripcion = models.TextField()
     def __str__(self):
         return f'{self.usuario}' 
     
@@ -81,12 +81,12 @@ class Pqrs(models.Model):
         ('queja','Queja'),
         ('reclamo','Reclamo'),
         ('sugerencia','Sugerencia'),
-        ('demandas','Demandas'),
+        ('demanda','Demanda'),
     ]
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    asunto = models.CharField(max_length=30)
-    descripcion = models.CharField(max_length=250)
-    tipo = models.CharField(max_length=20, choices=TIPO)
+    tipo = models.CharField(max_length=120, choices=TIPO)
+    asunto = models.CharField(max_length=1130)
+    descripcion = models.CharField(max_length=255)
     imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
@@ -153,3 +153,4 @@ class Pagos(models.Model):
 
       def __str__(self):
         return f'{self.nombre_usuario}'
+

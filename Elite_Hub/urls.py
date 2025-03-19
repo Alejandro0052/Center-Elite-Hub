@@ -15,18 +15,27 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import views  
+#from .views import register_user
+from .views import RegisterUser, LoginView
 #from .views import  #register_user, upload_image, UsuarioListView
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
     path('admin/', admin.site.urls), 
+    path('api/login/', LoginView.as_view(), name='login'),
+    path('api/register/', RegisterUser.as_view(), name='register_user'),
     path('', views.home, name='home'), 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),  
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'), 
     path('api/', include('Elite_Hub.api_urls')), 
+    path('reporte_usuarios/', views.reporte_usuarios, name='reporte_usuarios'),
+   # path('admin/reporte-datos/', views.reporte_datos_admin, name='reporte_datos_admin'),
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
