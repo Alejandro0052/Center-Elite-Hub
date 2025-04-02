@@ -12,10 +12,12 @@ class Usuario(AbstractUser):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     especialidad = models.CharField(max_length=115,null=True, blank=True)
+    nivel_estudios = models.TextField(max_length=15, null=False)
 
 
     def __str__(self):
