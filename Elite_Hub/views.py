@@ -1,5 +1,4 @@
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Usuario
 from .serializers import UsuarioSerializer
@@ -7,6 +6,7 @@ from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
@@ -110,7 +110,7 @@ class RegisterUser(APIView):
 
 #API USUARIOS UNIFICADOS
 
-class UsuariostiposListView(generics.ListAPIView):
+class UsuariostiposListView(APIView):
  def get(self, request):
     result = []
 
@@ -144,7 +144,11 @@ class UsuariostiposListView(generics.ListAPIView):
         })
 
 
-    return Response(result)
+    paginator = PageNumberPagination()
+    paginator.page_size = 5  # Cambia esto si necesitas otra cantidad
+
+    paginated_result = paginator.paginate_queryset(result, request)
+    return paginator.get_paginated_response(paginated_result)
 
 
 
