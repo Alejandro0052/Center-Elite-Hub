@@ -108,6 +108,48 @@ class RegisterUser(APIView):
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#API USUARIOS UNIFICADOS
+
+class UsuariostiposListView(generics.ListAPIView):
+ def get(self, request):
+    result = []
+
+    #Deportistas
+
+    deportistas = Deportista.objects.select_related('usuario').all()
+    for d in deportistas:
+        result.append({
+        "tipo":"Deportista",
+        "usuario":UsuarioSerializer(d.usuario).data,
+        "datos":{
+            "deporte":d.deporte,
+            "descripcion":d.descripcion
+        }
+
+
+        })
+
+    #Nutricionistas
+
+    nutricionistas = Nutricionista.objects.select_related('usuario').all()
+    for n in nutricionistas:
+        result.append({
+        "tipo":"Nutricionista",
+        "usuario":UsuarioSerializer(n.usuario).data,
+        "datos":{
+            "especialidad":n.especialidad,
+            "nivel de estudios":n.nivel_estudios,
+        }
+
+        })
+
+
+    return Response(result)
+
+
+
+
+
 #APIS USUARIOS
 
 class UsuarioListView(generics.ListAPIView):

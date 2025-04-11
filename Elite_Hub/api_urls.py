@@ -1,8 +1,14 @@
 from django.urls import path
 from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView, LoginView
 from .views import NutricionistaListView, DeportistaListView, PatrocinadorListView, MarcaListView, PqrsListView, ContenidoListView
-from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView, MarcaCreateView, PqrsCreateView
+from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView, MarcaCreateView, PqrsCreateView, UsuariostiposListView
+
 urlpatterns = [
+
+#Usuarios unificados
+
+    path('users/',  UsuariostiposListView.as_view(), name='usuriostipos_list'),
+
 
  #Usuarios
     path('usuarios/', UsuarioListView.as_view(), name='usuario_list'),
@@ -30,8 +36,8 @@ urlpatterns = [
     path('register/',RegisterUser.as_view(), name='register'),
 
 #Pqrs
-path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
-path('pqrs/create/',PqrsCreateView.as_view(), name='pqrs_list'),
+    path('pqrs/',PqrsListView.as_view(), name='pqrs_list'),
+    path('pqrs/create/',PqrsCreateView.as_view(), name='pqrs_list'),
 
 #Otras URLs
     path('contenidos/',ContenidoListView.as_view(), name='contenidos_list'),

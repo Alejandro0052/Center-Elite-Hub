@@ -110,7 +110,7 @@ class NutricionistaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Nutricionista
-        fields = ['usuario', 'especialidad','imagen_de_perfil']
+        fields = ['usuario', 'especialidad','nivel_estudios','imagen_de_perfil']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
