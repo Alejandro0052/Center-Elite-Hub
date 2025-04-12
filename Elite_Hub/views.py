@@ -143,10 +143,40 @@ class UsuariostiposListView(APIView):
 
         })
 
+    #Patrocinadores
+
+    patrocinadores = Patrocinador.objects.select_related('usuario').all()
+    for p in patrocinadores:
+        result.append({
+        "tipo":"Patrocinador",
+        "usuario":UsuarioSerializer(p.usuario).data,
+        "datos":{
+            "deportistas_interes":p.deportistas_interes,
+            "descripcion":p.descripcion
+
+        }
+
+    })
+    
+    #marcas 
+
+    marcas = Marca.objects.select_related('usuario').all()
+    for m in marcas:
+        result.append({
+            "tipo":"Marca",
+            "usuario":UsuarioSerializer(m.usuario).data,
+            "datos":{
+            "razon_social":m.razon_social
+            }
+            
+
+        })
+
+
+
 
     paginator = PageNumberPagination()
-    paginator.page_size = 5  # Cambia esto si necesitas otra cantidad
-
+    paginator.page_size = 10
     paginated_result = paginator.paginate_queryset(result, request)
     return paginator.get_paginated_response(paginated_result)
 
