@@ -10,7 +10,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
 from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
-from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer
+from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer,UsuarioPublicoSerializer
 from django.http import JsonResponse
 from rest_framework import status
 from .serializers import RegisterSerializer
@@ -120,7 +120,7 @@ class UsuariostiposListView(APIView):
     for d in deportistas:
         result.append({
         "tipo":"Deportista",
-        "usuario":UsuarioSerializer(d.usuario).data,
+        "usuario":UsuarioPublicoSerializer(d.usuario).data,
         "datos":{
             "deporte":d.deporte,
             "descripcion":d.descripcion
@@ -135,7 +135,7 @@ class UsuariostiposListView(APIView):
     for n in nutricionistas:
         result.append({
         "tipo":"Nutricionista",
-        "usuario":UsuarioSerializer(n.usuario).data,
+        "usuario":UsuarioPublicoSerializer(n.usuario).data,
         "datos":{
             "especialidad":n.especialidad,
             "nivel de estudios":n.nivel_estudios,
@@ -149,7 +149,7 @@ class UsuariostiposListView(APIView):
     for p in patrocinadores:
         result.append({
         "tipo":"Patrocinador",
-        "usuario":UsuarioSerializer(p.usuario).data,
+        "usuario":UsuarioPublicoSerializer(p.usuario).data,
         "datos":{
             "deportistas_interes":p.deportistas_interes,
             "descripcion":p.descripcion
@@ -164,16 +164,13 @@ class UsuariostiposListView(APIView):
     for m in marcas:
         result.append({
             "tipo":"Marca",
-            "usuario":UsuarioSerializer(m.usuario).data,
+            "usuario":UsuarioPublicoSerializer(m.usuario).data,
             "datos":{
             "razon_social":m.razon_social
             }
             
 
         })
-
-
-
 
     paginator = PageNumberPagination()
     paginator.page_size = 10

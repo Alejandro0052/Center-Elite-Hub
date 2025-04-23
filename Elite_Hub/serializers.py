@@ -52,6 +52,15 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
+class UsuarioPublicoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = ['id','first_name','last_name','direccion','edad','email']
+
+
+
+
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
