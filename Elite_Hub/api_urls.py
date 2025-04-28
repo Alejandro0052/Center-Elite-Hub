@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView, LoginView
+from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView, LoginView, NoticiasListView
 from .views import NutricionistaListView, DeportistaListView, PatrocinadorListView, MarcaListView, PqrsListView, ContenidoListView
 from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView, MarcaCreateView, PqrsCreateView, UsuariostiposListView
 
@@ -42,6 +42,7 @@ urlpatterns = [
 #Otras URLs
     path('contenidos/',ContenidoListView.as_view(), name='contenidos_list'),
     path('parametros/',ParametrosListView.as_view(), name='parametros'),
+    path('noticias/', NoticiasListView.as_view(), name='noticias'),
     path('login/',LoginView.as_view(), name='login'),
 
 

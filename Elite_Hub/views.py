@@ -8,8 +8,8 @@ from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros
-from .serializers import NutricionistaSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
+from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros,Noticias
+from .serializers import NutricionistaSerializer, NoticiasSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
 from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer,UsuarioPublicoSerializer
 from django.http import JsonResponse
 from rest_framework import status
@@ -394,6 +394,16 @@ class ParametrosListView(APIView):
     def get(self, request):
         parametros = Parametros.objects.all()
         serializer = ParametrosSerializer(parametros, many=True)
+        return Response(serializer.data)
+    
+    
+    
+#Api de noticias que debe llevar foto, titulo, texto y fecha
+
+class NoticiasListView(APIView):
+    def get(self, request):
+        noticias = Noticias.objects.all()
+        serializer = NoticiasSerializer(noticias, many=True)
         return Response(serializer.data)
     
 

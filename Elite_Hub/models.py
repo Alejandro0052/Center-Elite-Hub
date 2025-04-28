@@ -37,6 +37,25 @@ class Parametros(models.Model):
 
       def __str__(self):
         return f'{self.quienes_somos} - {self.contactenos}'
+      
+#Api de noticias que debe llevar foto, titulo, texto y fecha
+
+class Noticias(models.Model):
+      foto_noticia = models.ImageField(upload_to='noticias/', null=True, blank=True)
+      titulo = models.CharField(max_length=30, null=False,blank=True) 
+      texto_noticia = models.TextField(max_length=300,null=False, blank=True)
+      fecha = models.DateTimeField(auto_now_add=True)
+
+      def __str__(self):
+          return f'{self.titulo} - {self.texto_noticia}'
+
+
+
+
+
+    
+
+    
 
 
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA

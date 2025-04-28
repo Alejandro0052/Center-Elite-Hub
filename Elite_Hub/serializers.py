@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Usuario, Deportista, Patrocinador, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
+from .models import Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -132,12 +132,16 @@ class NutricionistaSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        # Genera la URL completa para la imagen
         request = self.context.get('request')
         if instance.imagen_de_perfil and request:
             representation['imagen_de_perfil'] = request.build_absolute_uri(instance.imagen_de_perfil.url)
         return representation
 
+
+class NoticiasSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Noticias
+        fields = ['titulo','texto_noticia','fecha','foto_noticia']
 
 
 class PqrsSerializer(serializers.ModelSerializer):
