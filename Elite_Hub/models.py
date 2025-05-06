@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
@@ -9,6 +10,7 @@ class Usuario(AbstractUser):
     edad = models.IntegerField(null=True, blank=True, default=18)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
 
+
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
@@ -18,6 +20,8 @@ class Nutricionista(models.Model):
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
     especialidad = models.CharField(max_length=115,null=True, blank=True)
     nivel_estudios = models.TextField(max_length=15, null=False)
+    fecha = models.DateTimeField(auto_now_add=True)
+
 
 
     def __str__(self):
@@ -29,6 +33,7 @@ class Parametros(models.Model):
       politica_tratamiento_datos = models.TextField(max_length=600, null=True, blank=True)
       contactenos = models.CharField(max_length=255, null=True, blank=True)
       terminos_condiciones = models.TextField(max_length=600, null=True, blank=True)
+
 
       #class Meta:
           #verbose_name = 'Parametro'
@@ -69,7 +74,9 @@ class Deportista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=20, choices=Deporte)
     descripcion = models.CharField(max_length=50)
-    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+   # fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=timezone.now)
+    imagen_de_perfil = models.ImageField(upload_to='deportistas/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
@@ -83,6 +90,8 @@ class Patrocinador(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deportistas_interes = models.CharField(max_length=100, choices=Deportistas_Interes, null=True)
+    #fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=timezone.now)
     imagen_de_perfil = models.ImageField(upload_to='patrocinadores/', blank=True, null=True)
     descripcion = models.TextField()
     def __str__(self):
@@ -91,7 +100,9 @@ class Patrocinador(models.Model):
 class Marca(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
-    imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    #fecha = models.DateTimeField(auto_now_add=True)
+    fecha = models.DateTimeField(default=timezone.now)
+    imagen_de_perfil = models.ImageField(upload_to='marcas/', null=True, blank=True)
 
     def __str__(self):
         return f'{self.usuario}'
@@ -108,11 +119,15 @@ class Pqrs(models.Model):
     tipo = models.CharField(max_length=120, choices=TIPO)
     asunto = models.CharField(max_length=1130)
     descripcion = models.CharField(max_length=255)
+    #fecha = models.DateTimeField(auto_now_add=True)   
+    fecha = models.DateTimeField(default=timezone.now)
     imagen_de_evidencia = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    
     def __str__(self):
        return f'{self.usuario} - {self.asunto}' 
 
 #EL DEPORTISTA DEBE RELACIONARSE A UN DEPORTE, NO UN DEPORTE A UN DEPORTISTA
+#DE MOMENTO NO SE ESTA USANDO ESTE MODELO
 class Deporte(models.Model):
     Deporte = [
     ('ciclismo','Ciclismo'),
@@ -127,12 +142,25 @@ class Deporte(models.Model):
 
     def __str__(self):
        return f'{self.deportista}'
-
+#DE MOMENTO NO SE ESTA USANDO ESTE MODELO DEPORTE
+ 
+#Validar donde se esta usando el modelo contenido
 class Contenido(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=55)
     descripcion = models.TextField()
+    fecha = models.DateTimeField(default=timezone.now)
     contenido_imagen = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+
+    def __str__(self):
+       return f'{self.titulo}'
+    
+
+class Eventos(models.Model):
+    titulo = models.CharField(max_length=55)
+    descripcion = models.TextField()
+    fecha = models.DateTimeField(default=timezone.now)
+    evento_imagen = models.ImageField(upload_to='eventos/', null=True, blank=True)
 
     def __str__(self):
        return f'{self.titulo}'

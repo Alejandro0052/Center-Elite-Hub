@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Usuario, Deporte, Deportista, Pqrs, Patrocinador, Noticias, Contenido, Nutricionista, Marca , Parametros
+from .models import Usuario, Deporte,Eventos, Deportista, Pqrs, Patrocinador, Noticias, Contenido, Nutricionista, Marca , Parametros
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
@@ -216,15 +216,15 @@ class UsuarioAdmin(UserAdmin):
 
 
 class DeportistaAdmin(admin.ModelAdmin):
-    list_display = ('usuario','deporte','descripcion','imagen_de_perfil')
+    list_display = ('usuario','deporte','descripcion','imagen_de_perfil','fecha')
 
 
 class NutricionistasAdmin(admin.ModelAdmin):
-    list_display = ('usuario','especialidad', 'imagen_de_perfil')
+    list_display = ('usuario','especialidad', 'imagen_de_perfil','fecha')
 
 
 class PatrocinadorAdmin(admin.ModelAdmin):
-    list_display = ('usuario','deportistas_interes', 'descripcion', 'imagen_de_perfil')
+    list_display = ('usuario','deportistas_interes', 'descripcion', 'imagen_de_perfil','fecha')
 
 class MarcasAdmin(admin.ModelAdmin):
     list_display = ('usuario','razon_social', 'imagen_de_perfil')
@@ -235,6 +235,9 @@ class ParametrosAdmin(admin.ModelAdmin):
 class NoticiasAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'texto_noticia','foto_noticia','fecha')
 
+class EventosAdmin(admin.ModelAdmin):
+    list_display = ('titulo','descripcion','evento_imagen','fecha')
+
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Deportista, DeportistaAdmin)
 admin.site.register(Nutricionista, NutricionistasAdmin)
@@ -244,3 +247,4 @@ admin.site.register(Pqrs)
 admin.site.register(Contenido)
 admin.site.register(Parametros, ParametrosAdmin)
 admin.site.register(Noticias,NoticiasAdmin)
+admin.site.register(Eventos,EventosAdmin)

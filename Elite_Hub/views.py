@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Usuario
-from .serializers import UsuarioSerializer
+from .models import Eventos, Usuario
+from .serializers import EventosSerializer, UsuarioSerializer
 from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
@@ -406,6 +406,13 @@ class NoticiasListView(APIView):
         serializer = NoticiasSerializer(noticias, many=True)
         return Response(serializer.data)
     
+
+class EventosListView(APIView):
+    def get(self, request):
+        eventos = Eventos.objects.all()
+        serializer = EventosSerializer(eventos, many=True)
+        return Response(serializer.data)
+
 
 def reporte_usuarios(request):
     # Obtener los datos de usuarios por tipo

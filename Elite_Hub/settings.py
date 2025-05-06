@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 
 
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Define la URL que se utilizará para acceder a los archivos multimedia
 #MEDIA_URL = '/media/'
@@ -224,6 +223,10 @@ STATIC_URL = 'static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+TIME_ZONE = 'America/Bogota'
+USE_TZ = True
+
 
 
 # Default primary key field type

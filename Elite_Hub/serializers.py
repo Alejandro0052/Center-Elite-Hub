@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
+from .models import Eventos, Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -139,9 +139,22 @@ class NutricionistaSerializer(serializers.ModelSerializer):
 
 
 class NoticiasSerializer(serializers.ModelSerializer):
+    foto_noticia = serializers.ImageField(use_url=True)
+
     class Meta:
         model = Noticias
         fields = ['titulo','texto_noticia','fecha','foto_noticia']
+
+
+class EventosSerializer(serializers.ModelSerializer):
+    evento_imagen = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = Eventos
+        fields = ['titulo','descripcion','evento_imagen','fecha']
+
+
+
 
 
 class PqrsSerializer(serializers.ModelSerializer):
