@@ -83,6 +83,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 class DeportistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
+    imagen_de_perfil = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Deportista
@@ -99,6 +100,7 @@ class DeportistaSerializer(serializers.ModelSerializer):
 
 class PatrocinadorSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
+    imagen_de_perfil = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Patrocinador
@@ -116,6 +118,7 @@ class PatrocinadorSerializer(serializers.ModelSerializer):
 
 class NutricionistaSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
+    imagen_de_perfil = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Nutricionista
@@ -185,6 +188,7 @@ class ContenidoSerializer(serializers.ModelSerializer):
 
 class MarcasSerializer(serializers.ModelSerializer):
     usuario = UsuarioSerializer()
+    imagen_de_perfil = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Marca
@@ -206,6 +210,7 @@ class ParametrosSerializer(serializers.ModelSerializer):
 
 class DeporteSerializer(serializers.ModelSerializer):
     deportista = DeportistaSerializer()
+    imagen_de_perfil = serializers.ImageField(use_url=True)
 
     class Meta:
         model = Deporte
