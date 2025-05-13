@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Eventos, Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros
+from .models import Eventos, Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros, Testimonios
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -122,7 +122,7 @@ class NutricionistaSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Nutricionista
-        fields = ['usuario', 'especialidad','nivel_estudios','imagen_de_perfil']
+        fields = ['usuario', 'especialidad','nivel_estudios','descripcion','imagen_de_perfil']
 
     def create(self, validated_data):
         usuario_data = validated_data.pop('usuario')
@@ -155,6 +155,13 @@ class EventosSerializer(serializers.ModelSerializer):
     class Meta:
         model = Eventos
         fields = ['titulo','descripcion','evento_imagen','fecha']
+
+class TestimoniosSerializer(serializers.ModelSerializer):
+    testimonio_imagen = serializers.ImageField(use_url=True)
+
+    class Meta:
+        model = Eventos
+        fields = ['titulo','descripcion','testimonio_imagen','fecha']
 
 
 
@@ -192,7 +199,7 @@ class MarcasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
-        fields = ['usuario','razon_social','imagen_de_perfil','descripcion']
+        fields = ['usuario','razon_social','imagen_de_perfil','descripcion','fecha']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

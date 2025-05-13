@@ -171,6 +171,7 @@ class Testimonios(models.Model):
     titulo = models.CharField(max_length=55, null=False, blank=False)
     descripcion= models.TextField(max_length=255, null=False, blank=False)
     testimonio_imagen = models.ImageField(upload_to='testimionios', null=True, blank=True)
+    fecha = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'{self.titulo}'

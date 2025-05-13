@@ -1,14 +1,14 @@
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Eventos, Usuario
-from .serializers import EventosSerializer, UsuarioSerializer
+from .serializers import EventosSerializer, UsuarioSerializer, TestimoniosSerializer
 from rest_framework import generics
 from django.http import HttpResponse
 from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros,Noticias
+from .models import Nutricionista, Deportista , Patrocinador, Marca, Pqrs, Contenido, Parametros,Noticias, Testimonios
 from .serializers import NutricionistaSerializer, NoticiasSerializer, DeportistaSerializer, PatrocinadorSerializer, MarcasSerializer, PqrsSerializer, ContenidoSerializer
 from .serializers import RegisterSerializer, ParametrosSerializer, LoginSerializer,UsuarioPublicoSerializer
 from django.http import JsonResponse
@@ -411,6 +411,12 @@ class EventosListView(APIView):
     def get(self, request):
         eventos = Eventos.objects.all()
         serializer = EventosSerializer(eventos, many=True)
+        return Response(serializer.data)
+    
+class TestimoniosListView(APIView):
+    def get(self, request):
+        testimonios = Testimonios.objects.all()
+        serializer = TestimoniosSerializer(testimonios,many=True)
         return Response(serializer.data)
 
 
