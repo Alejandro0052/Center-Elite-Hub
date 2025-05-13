@@ -64,7 +64,7 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['id','username','first_name', 'last_name', 'direccion', 'edad','password','email'] #, 'imagen_de_perfil'
+        fields = ['id','username','first_name', 'last_name', 'direccion', 'edad','email'] #, 'imagen_de_perfil'
 
     def create(self, validated_data):
         user = Usuario(
@@ -192,7 +192,7 @@ class MarcasSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marca
-        fields = ['usuario','razon_social','imagen_de_perfil']
+        fields = ['usuario','razon_social','imagen_de_perfil','descripcion']
     
     def to_representation(self, instance):
         representation = super().to_representation(instance)

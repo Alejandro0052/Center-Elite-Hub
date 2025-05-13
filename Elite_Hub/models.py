@@ -18,6 +18,7 @@ class Usuario(AbstractUser):
 class Nutricionista(models.Model):
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     imagen_de_perfil = models.ImageField(upload_to='perfil_imagenes/', null=True, blank=True)
+    descripcion = models.CharField(max_length=50,null=False, blank=False)
     especialidad = models.CharField(max_length=115,null=True, blank=True)
     nivel_estudios = models.TextField(max_length=15, null=False)
     fecha = models.DateTimeField(auto_now_add=True)
@@ -73,8 +74,7 @@ class Deportista(models.Model):
     ]
     usuario = models.OneToOneField(Usuario, on_delete=models.CASCADE, primary_key=True)
     deporte = models.CharField(max_length=20, choices=Deporte)
-    descripcion = models.CharField(max_length=50)
-   # fecha = models.DateTimeField(auto_now_add=True)
+    descripcion = models.CharField(max_length=50,null=False, blank=False)
     fecha = models.DateTimeField(default=timezone.now)
     imagen_de_perfil = models.ImageField(upload_to='deportistas/', null=True, blank=True)
 
@@ -93,7 +93,7 @@ class Patrocinador(models.Model):
     #fecha = models.DateTimeField(auto_now_add=True)
     fecha = models.DateTimeField(default=timezone.now)
     imagen_de_perfil = models.ImageField(upload_to='patrocinadores/', blank=True, null=True)
-    descripcion = models.TextField()
+    descripcion = models.TextField(max_length=255,null=False, blank=False)
     def __str__(self):
         return f'{self.usuario}' 
     
@@ -103,6 +103,8 @@ class Marca(models.Model):
     #fecha = models.DateTimeField(auto_now_add=True)
     fecha = models.DateTimeField(default=timezone.now)
     imagen_de_perfil = models.ImageField(upload_to='marcas/', null=True, blank=True)
+    descripcion = models.TextField(null=False, blank=False)
+
 
     def __str__(self):
         return f'{self.usuario}'
@@ -165,6 +167,14 @@ class Eventos(models.Model):
     def __str__(self):
        return f'{self.titulo}'
     
+class Testimonios(models.Model):
+    titulo = models.CharField(max_length=55, null=False, blank=False)
+    descripcion= models.TextField(max_length=255, null=False, blank=False)
+    testimonio_imagen = models.ImageField(upload_to='testimionios', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.titulo}'
+
 
 ##Another superclass, it is not yet related to more classes, (they are only related to those below)
 

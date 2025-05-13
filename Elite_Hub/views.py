@@ -415,7 +415,6 @@ class EventosListView(APIView):
 
 
 def reporte_usuarios(request):
-    # Obtener los datos de usuarios por tipo
     total_deportistas = Deportista.objects.count()
     total_patrocinadores = Patrocinador.objects.count()
     total_marcas = Marca.objects.count()
