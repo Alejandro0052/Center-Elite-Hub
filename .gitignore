@@ -14,5 +14,9 @@ env/
 python-dotenv/
 
 # Ignorar la carpeta media que contiene archivos subidos por los usuarios
+<<<<<<< HEAD
 media/
 
+=======
+media/
+>>>>>>> b61cb2f1500eee577051c0e31a95bb311c5e6927
