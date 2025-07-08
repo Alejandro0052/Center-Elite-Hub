@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import Usuario, Testimonios,Eventos, Deportista, Pqrs, Patrocinador, Noticias, Contenido, Nutricionista, Marca , Parametros
+from .models import Usuario, Testimonios,Eventos, Deportista, Pqrs, Patrocinador, Noticias, Nutricionista, Marca , Parametros
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas
 from openpyxl import Workbook
@@ -247,7 +247,6 @@ admin.site.register(Nutricionista, NutricionistasAdmin)
 admin.site.register(Patrocinador, PatrocinadorAdmin)
 admin.site.register(Marca, MarcasAdmin)
 admin.site.register(Pqrs)
-admin.site.register(Contenido)
 admin.site.register(Parametros, ParametrosAdmin)
 admin.site.register(Noticias,NoticiasAdmin)
 admin.site.register(Eventos,EventosAdmin)

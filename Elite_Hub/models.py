@@ -100,7 +100,6 @@ class Patrocinador(models.Model):
 class Marca(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     razon_social = models.CharField(max_length=60, default='Coloca el nombre de tu empresa')
-    #fecha = models.DateTimeField(auto_now_add=True)
     fecha = models.DateTimeField(default=timezone.now)
     imagen_de_perfil = models.ImageField(upload_to='marcas/', null=True, blank=True)
     descripcion = models.TextField(null=False, blank=False)
@@ -175,6 +174,20 @@ class Testimonios(models.Model):
 
     def __str__(self):
         return f'{self.titulo}'
+#usuario con foreignkey a usuario
+#texto imagen video y fecha de creación
+
+class Publicacion(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='publicaciones')
+    texto = models.TextField(max_length=500, null=True, blank=True, verbose_name="Escribe algo!")
+    imagen =  models.ImageField(upload_to='publicaciones', null=True, blank=True)
+    #agregar un campo de video
+    fecha_creacion = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'{self.usuario.username} - {self.texto[:30]}'
+
+
 
 
 ##Another superclass, it is not yet related to more classes, (they are only related to those below)

@@ -44,7 +44,7 @@ urlpatterns = [
     path('parametros/',ParametrosListView.as_view(), name='parametros'),
     path('noticias/', NoticiasListView.as_view(), name='noticias'),
     path('eventos/', EventosListView.as_view(), name='eventos'),
-    path('testiomonios/',TestimoniosListView.as_view(), name='testimonios'),
+    path('testimonios/',TestimoniosListView.as_view(), name='testimonios'),
     path('login/',LoginView.as_view(), name='login'),
 
 
