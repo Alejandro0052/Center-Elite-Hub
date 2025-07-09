@@ -179,7 +179,7 @@ class Testimonios(models.Model):
 
 class Publicacion(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='publicaciones')
-    texto = models.TextField(max_length=500, null=True, blank=True, verbose_name="Escribe algo!")
+    texto = models.TextField(max_length=500, null=True, blank=True,verbose_name='¿Que estas pensando?')
     imagen =  models.ImageField(upload_to='publicaciones', null=True, blank=True)
     #agregar un campo de video
     fecha_creacion = models.DateTimeField(default=timezone.now)

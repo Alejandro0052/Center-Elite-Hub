@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Eventos, Usuario, Deportista, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros, Testimonios
+from .models import Eventos, Usuario, Deportista, Publicacion, Patrocinador, Noticias, Marca, Nutricionista, Pqrs, Contenido, Deporte, User, Parametros, Testimonios
 from django.contrib.auth import authenticate
 
 User = get_user_model()
@@ -160,10 +160,15 @@ class TestimoniosSerializer(serializers.ModelSerializer):
     testimonio_imagen = serializers.ImageField(use_url=True)
 
     class Meta:
-        model = Eventos
+        model = Testimonios
         fields = ['titulo','descripcion','testimonio_imagen','fecha']
 
+class PublicacionesSerializer(serializers.Serializer):
+    imagen = serializers.ImageField(use_url=True)
 
+    class Meta:
+        model = Publicacion
+        fields = ['texto','imagen','fecha_creacion']
 
 
 

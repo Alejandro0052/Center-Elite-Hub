@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import  UsuarioListView, UsuarioCreateView, NutricionistaCreateView, LoginView, NoticiasListView, EventosListView, TestimoniosListView
+from .views import  UsuarioListView, PublicacionListView, UsuarioCreateView, NutricionistaCreateView, LoginView, NoticiasListView, EventosListView, TestimoniosListView
 from .views import NutricionistaListView, DeportistaListView, PatrocinadorListView, MarcaListView, PqrsListView, ContenidoListView
 from .views import RegisterUser, ParametrosListView, DeportistaCreateView, PatrocinadorCreateView, MarcaCreateView, PqrsCreateView, UsuariostiposListView
 
@@ -45,6 +45,7 @@ urlpatterns = [
     path('noticias/', NoticiasListView.as_view(), name='noticias'),
     path('eventos/', EventosListView.as_view(), name='eventos'),
     path('testimonios/',TestimoniosListView.as_view(), name='testimonios'),
+    path('publicaciones/',PublicacionListView.as_view(), name='publicaciones'),
     path('login/',LoginView.as_view(), name='login'),
 
 
