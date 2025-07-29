@@ -425,9 +425,6 @@ class PublicacionListView(APIView):
         serializer = PublicacionesSerializer(publicacion,many=True)
         return Response(serializer.data)
 
-    
-
-
 
 def reporte_usuarios(request):
     total_deportistas = Deportista.objects.count()
