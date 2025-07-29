@@ -14,7 +14,6 @@ from pathlib import Path
 import os
 
 
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Define la URL que se utilizará para acceder a los archivos multimedia
 #MEDIA_URL = '/media/'
@@ -32,9 +31,9 @@ SECRET_KEY = 'django-insecure-!w!3_ies1bkw_wcy*1p)0dr=zt%j0!il63&yo$@gb#a0uiaoc+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-#AUTH_USER_MODEL = 'EliteHub.Usuario'
+AUTH_USER_MODEL = 'Elite_Hub.Usuario'
 
 # Application definition
 
@@ -46,23 +45,31 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Elite_Hub'
- 
+    'Elite_Hub',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
+    'corsheaders'
+    
 ]
 
-INSTALLED_APPS = [
-    'jazzmin',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'Elite_Hub'
- 
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+       
+    ),
+}
+
 
 JAZZMIN_SETTINGS = {
+   # "site_logo": "site_logo/logo1.png",  # Ruta del logo dentro de tu carpeta estática
+    #"login_logo": "login_logo/logo2.png",
     "site_title": "Elite Hub",
     "site_header": "Administración",
     "site_brand": "Elite Hub",
@@ -86,25 +93,25 @@ JAZZMIN_UI_TWEAKS = {
     "body_small_text": False,
     "brand_small_text": False,
     "brand_colour": False,
-    "accent": "accent-lime",
-    "navbar": "navbar-dark",
+    "accent": "accent-primary",
+    "navbar": "navbar-white navbar-light",
     "no_navbar_border": False,
     "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": False,
-    "sidebar": "sidebar-dark-lime",
+    "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "darkly",
-    "dark_mode_theme": "cyborg",
+    "theme": "lumen",
+    "dark_mode_theme": None,
     "button_classes": {
-        "primary": "btn-primary",
-        "secondary": "btn-secondary",
+        "primary": "btn-outline-primary",
+        "secondary": "btn-outline-secondary",
         "info": "btn-info",
         "warning": "btn-warning",
         "danger": "btn-danger",
@@ -112,8 +119,8 @@ JAZZMIN_UI_TWEAKS = {
     }
 }
 
-
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -121,7 +128,16 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
+]
+
+TIME_ZONE = 'America/Bogota'
+USE_TZ = True
 
 ROOT_URLCONF = 'Elite_Hub.urls'
 
@@ -182,7 +198,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -190,6 +206,15 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_I18N = True  # Activar la internacionalización
+
+USE_L10N = True  # Activar la localización
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',  # Asegúrate de que este directorio exista
+]
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -199,10 +224,12 @@ STATIC_URL = 'static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+TIME_ZONE = 'America/Bogota'
+USE_TZ = True
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
